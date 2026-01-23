@@ -57,7 +57,7 @@ class SSH(Connection_Info):
 
 
 
-class Tachibana_Entries(TypedDict):
+class Tachibana_JSON(TypedDict):
 	"""Tachibana.json File Format"""
 	_Version: str;
 	Config: dict[str, Any];
