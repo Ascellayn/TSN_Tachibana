@@ -2,7 +2,7 @@
 ### Tachibana.json
 ```
 {
-	"_Version": "{App.Version}",
+	"_Version": {App.Version},
 	"Config": {},
 	"Servers": {
 		"SSH": {
@@ -59,6 +59,6 @@ class SSH(Connection_Info):
 
 class Tachibana_JSON(TypedDict):
 	"""Tachibana.json File Format"""
-	_Version: str;
+	_Version: tuple[int, int, int];
 	Config: dict[str, Any];
 	Servers: dict[Server_Type, Server];
