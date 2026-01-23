@@ -59,6 +59,6 @@ class SSH(Connection_Info):
 
 class Tachibana_JSON(TypedDict):
 	"""Tachibana.json File Format"""
-	_Version: tuple[int, int, int];
+	_Version: tuple[int, ...];
 	Config: dict[str, Any];
 	Servers: dict[Server_Type, Server];
