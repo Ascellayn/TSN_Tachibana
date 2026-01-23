@@ -1,0 +1,11 @@
+{
+	"Name": "Tachibana",
+	"Description": "Tachibana is a (work in progress) TSNA-Based rewrite of Adellian's SSHMan Application.",
+	"Author": ["Ascellayn", "The Sirio Network"],
+	"Contributors": [],
+	"License": "TSN License 2.1 - Base",
+	"Codename": "TSN_Tachibana",
+	"Branch": "Azure",
+	"Version": "v0_dev",
+	"TSNA": [5,6,0]
+}
