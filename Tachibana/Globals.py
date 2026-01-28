@@ -1,1 +1,25 @@
 from TSN_Abstracter import *;
+from . import Type;
+
+Tachibana: Type.Tachibana_JSON = File.JSON_Read("Tachibana.json"); # pyright: ignore[reportAssignmentType] | In normal circumstances, this SHOULD return a Tachibana_JSON
+
+class Data:
+	""" This class would have been inside its own module, but the IDE gets angry because it's stupid and doesn't realize Tachibana is declared in this very file even if I explicitly import it """
+	@staticmethod
+	def Save() -> None:
+		global Tachibana;
+		Log.Stateless(f"Saving Tachibana.json...");
+		Tachibana["_Version"] = App.Version;
+		File.JSON_Write("Tachibana.json", Tachibana);
+		Log.Awaited().OK();
+
+	@staticmethod
+	def Recreate() -> None:
+		global Tachibana;
+		Log.Error("Tachibana.json is corrupted or missing, creating a backup if it exists and recreating the file!");
+		if (File.Exists("Tachibana.json")): File.JSON_Write(f"Tachibana-{Time.Get_Unix()}.bak", Tachibana);
+		Tachibana = {
+			"_Version": App.Version,
+			"Config": {},
+			"Servers": {}
+		};
