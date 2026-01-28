@@ -23,7 +23,7 @@
 }
 ```
 """
-from Globals import Any, TypedDict;
+from .Globals import Any, TypedDict;
 import enum;
 
 
