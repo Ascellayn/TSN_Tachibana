@@ -1,2 +1,2 @@
 from .Globals import *;
-from . import Type;
+from .Type import *;
