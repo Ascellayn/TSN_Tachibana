@@ -1,4 +1,5 @@
 from TSN_Abstracter import *;
+from TSN_Abstracter import TUI; # pyright: ignore[reportUnusedImport]
 from . import Type;
 
 Tachibana: Type.Tachibana_JSON;
