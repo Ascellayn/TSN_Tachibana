@@ -24,7 +24,6 @@
 ```
 """
 from .Globals import Any, TypedDict;
-import enum;
 
 
 
@@ -32,8 +31,6 @@ import enum;
 
 # Basic Types
 type Profile = dict[str, Connection_Info];
-class Server_Type(enum.Enum):
-	SSH = "SSH";
 
 
 
@@ -61,4 +58,4 @@ class Tachibana_JSON(TypedDict):
 	"""Tachibana.json File Format"""
 	_Version: list[int];
 	Config: dict[str, Any];
-	Servers: dict[Server_Type, Server];
+	Servers: dict[str, Server];
