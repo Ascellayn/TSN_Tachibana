@@ -33,7 +33,7 @@ def Menu_SSH_Create(*args: Any) -> None:
 		TUI.Menu.Entry(10, "Spoof Terminal", "Enable to spoof to the Server which Terminal you are using. Useful if the Server does not support your Terminal."),
 			TUI.Menu.Entry(11, "Exported Terminal", "Increases compatibility if your Server does not support your Terminal.", 1, Value="xterm-256color"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "[TBD - UNAVAILABLE] Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
 		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.ù", Function=Menu_SSH),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
@@ -51,7 +51,7 @@ def Menu_SSH(*args: Any) -> None:
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
 	TUI.Menu.Interactive(Entries);
-	Quit(None);
+	Menu_Main();
 
 
 
@@ -66,7 +66,7 @@ def Menu_Main(*args: Any) -> None:
 		TUI.Menu.Entry(0, "Secure Shell Server", Function=Menu_SSH),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Exit {App.Name}", "You may also press \"ESC\" to quit Tachibana at any point.", Function=Quit)
+		TUI.Menu.Entry(1, f"Exit {App.Name}", "Your train will always be waiting for you, see you next time!", Function=Quit)
 	];
 	TUI.Menu.Interactive(Entries);
 	Quit(None);
