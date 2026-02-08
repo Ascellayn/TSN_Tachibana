@@ -9,13 +9,13 @@ from Tachibana import *;
 
 
 
-def Quit(Entries: TUI.Menu.Entries | None) -> None:
+def Quit() -> None:
 	TUI.Exit(); exit(0);
 
 
 
 
-def Menu_SSH_Create(*args: Any) -> None:
+def Menu_SSH_Create() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Create SSH Connection", Bold=True),
 		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this SSH Server.", ID="Tachibana_Name"),
@@ -33,17 +33,20 @@ def Menu_SSH_Create(*args: Any) -> None:
 		TUI.Menu.Entry(10, "Spoof Terminal", "Enable to spoof to the Server which Terminal you are using. Useful if the Server does not support your Terminal.", ID="Term_Spoof"),
 			TUI.Menu.Entry(11, "Exported Terminal", "Increases compatibility if your Server does not support your Terminal.", Indentation=1, Value="xterm-256color", ID="Term_Spoofed"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
-		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_SSH),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True),
+		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_SSH, Indentation=-2),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
 	];
-	TUI.Menu.Interactive(Entries);
+	Data: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	if (Data):
+		pass;
+
 	Menu_Main();
 
 
 
-def Menu_WebDAV_Create(*args: Any) -> None:
+def Menu_WebDAV_Create() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Create WebDAV Connection", Bold=True),
 		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this WebDAV Server.", ID="Tachibana_Name"),
@@ -70,12 +73,14 @@ def Menu_WebDAV_Create(*args: Any) -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
-	TUI.Menu.Interactive(Entries);
+	Data: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	if (Data):
+		pass;
 	Menu_Main();
 
 
 
-def Menu_Wireguard_Create(*args: Any) -> None:
+def Menu_Wireguard_Create() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Create Wireguard Connection", Bold=True),
 		TUI.Menu.Entry(20, f"Notice: {App.Name} at this time is unable to create / edit / delete Wireguard Configurations."),
@@ -89,42 +94,44 @@ def Menu_Wireguard_Create(*args: Any) -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
-	TUI.Menu.Interactive(Entries);
+	Data: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	if (Data):
+		pass;
 	Menu_Main();
 
 
 
 
 
-def Menu_SSH(*args: Any) -> None:
+def Menu_SSH() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Secure Shell Server - Connections", Bold=True),
 		TUI.Menu.Entry(20, "TO BE DONE - DISPLAY SERVERS PER NAME / ADDRESS"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Register New Server", "Register a brand new SSH Server.", Function=Menu_SSH_Create),
-		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+		TUI.Menu.Entry(0, f"Register New Server", "Register a brand new SSH Server.", Function=Menu_SSH_Create, Indentation=-2),
+		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
 	];
 	TUI.Menu.Interactive(Entries);
 	Menu_Main();
 
-def Menu_WebDAV(*args: Any) -> None:
+def Menu_WebDAV() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "WebDAV - Connections", Bold=True),
 		TUI.Menu.Entry(20, "TO BE DONE - DISPLAY SERVERS PER NAME / ADDRESS"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Register New Server", "Register a brand new WebDAV Server.", Function=Menu_WebDAV_Create),
-		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+		TUI.Menu.Entry(0, f"Register New Server", "Register a brand new WebDAV Server.", Function=Menu_WebDAV_Create, Indentation=-2),
+		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
 	];
 	TUI.Menu.Interactive(Entries);
 	Menu_Main();
 
-def Menu_Wireguard(*args: Any) -> None:
+def Menu_Wireguard() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Wireguard - Connections", Bold=True),
 		TUI.Menu.Entry(20, "TO BE DONE - DISPLAY SERVERS PER NAME / ADDRESS"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Register New Adapter", "Register a brand new Wireguard Adapter.", Function=Menu_Wireguard_Create),
-		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+		TUI.Menu.Entry(0, f"Register New Adapter", "Register a brand new Wireguard Adapter.", Function=Menu_Wireguard_Create, Indentation=-2),
+		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
 	];
 	TUI.Menu.Interactive(Entries);
 	Menu_Main();
@@ -133,7 +140,7 @@ def Menu_Wireguard(*args: Any) -> None:
 
 
 
-def Menu_Main(*args: Any) -> None:
+def Menu_Main() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Welcome to Tachibana, the Server Connection Manager of Adellian."),
 		TUI.Menu.Entry(20, ""),
@@ -146,10 +153,10 @@ def Menu_Main(*args: Any) -> None:
 		TUI.Menu.Entry(0, "Wireguard", Function=Menu_Wireguard),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Exit {App.Name}", "Your train will always be waiting for you, see you next time!", Function=Quit)
+		TUI.Menu.Entry(0, f"Exit {App.Name}", "Your train will always be waiting for you, see you next time!", Function=Quit, Indentation=-2)
 	];
 	TUI.Menu.Interactive(Entries);
-	Quit(None);
+	Quit();
 
 
 
