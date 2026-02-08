@@ -58,7 +58,7 @@ def Menu_WebDAV_Create(*args: Any) -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, "Caching", Bold=True),
 		TUI.Menu.Entry(10, "Enable VFS Cache", "This settings allows the WebDAV Client to store certain files for faster file access at the cost of increased disk usage on the client side."),
-			TUI.Menu.Entry(11, "Cache Mode", "Specify which VFS Caching Mode we should use. Can be \"writes\", \"full\" or \"writeback\".", Value="full"),
+			TUI.Menu.Entry(12, "Cache Mode", "Specify which VFS Caching Mode we should use.", Value="full", Arguments=("off", "writes", "full", "writeback")),
 		TUI.Menu.Entry(10, "Enable Directory Cache", "This settings allows the WebDAV Client to store the contents of folders. Useful if you're frequently accessing repeatedly the same folder."),
 			TUI.Menu.Entry(11, "Cache Duration", "Specify how long the directory cache should last before expiring.", Value="1h"),
 		TUI.Menu.Entry(20, ""),
