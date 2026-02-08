@@ -42,12 +42,88 @@ def Menu_SSH_Create(*args: Any) -> None:
 	Menu_Main();
 
 
+
+def Menu_WebDAV_Create(*args: Any) -> None:
+	Entries: TUI.Menu.Entries = [
+		TUI.Menu.Entry(20, "Create WebDAV Connection", Bold=True),
+		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this WebDAV Server."),
+		TUI.Menu.Entry(11, "WebDAV Name", "Specify a name used by the WebDAV Configurator."),
+		TUI.Menu.Entry(11, "Server URL", "Specify the URL of the WebDAV Server."),
+		TUI.Menu.Entry(11, "Username", "The username we should log on as.", Value="admin"),
+		TUI.Menu.Entry(11, "Password", "The password we should use to login."),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(20, "Mounting Settings", Bold=True, Indentation=1),
+		TUI.Menu.Entry(11, "Remote Folder", "Specify the folder you'd like to access from the Server remotely.", Value="/", Indentation=1),
+		TUI.Menu.Entry(11, "Local Folder", "Specify a place in your filesystem where you would like to mount the remote folder.", Value="/media/WebDAV", Indentation=1),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(20, "Caching", Bold=True),
+		TUI.Menu.Entry(10, "Enable VFS Cache", "This settings allows the WebDAV Client to store certain files for faster file access at the cost of increased disk usage on the client side."),
+			TUI.Menu.Entry(11, "Cache Mode", "Specify which VFS Caching Mode we should use. Can be \"writes\", \"full\" or \"writeback\".", Value="full"),
+		TUI.Menu.Entry(10, "Enable Directory Cache", "This settings allows the WebDAV Client to store the contents of folders. Useful if you're frequently accessing repeatedly the same folder."),
+			TUI.Menu.Entry(11, "Cache Duration", "Specify how long the directory cache should last before expiring.", Value="1h"),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(20, "Miscellaneous", Bold=True),
+		TUI.Menu.Entry(11, "Pacer Minimum Sleep", "Specify the minimum time in milliseconds the WebDAV client should wait before sending a new request.", Value="0.01", Arguments=(r"[\d\.]",)),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
+		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_SSH),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+	];
+	TUI.Menu.Interactive(Entries);
+	Menu_Main();
+
+
+
+def Menu_Wireguard_Create(*args: Any) -> None:
+	Entries: TUI.Menu.Entries = [
+		TUI.Menu.Entry(20, "Create Wireguard Connection", Bold=True),
+		TUI.Menu.Entry(20, f"Notice: {App.Name} at this time is unable to create / edit / delete Wireguard Configurations."),
+		TUI.Menu.Entry(20, "This WG functionality is simply present to regroup in one place every connections you may turn on / off."),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this Wireguard Server."),
+		TUI.Menu.Entry(11, "Wireguard Adapter", "The name of the adapter in /etc/wireguard/*.conf", Value="wg0"),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
+		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_SSH),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+	];
+	TUI.Menu.Interactive(Entries);
+	Menu_Main();
+
+
+
+
+
 def Menu_SSH(*args: Any) -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Secure Shell Server - Connections", Bold=True),
 		TUI.Menu.Entry(20, "TO BE DONE - DISPLAY SERVERS PER NAME / ADDRESS"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Register New Server", "Register a brand new SSH Server.", Function=Menu_SSH_Create),
+		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+	];
+	TUI.Menu.Interactive(Entries);
+	Menu_Main();
+
+def Menu_WebDAV(*args: Any) -> None:
+	Entries: TUI.Menu.Entries = [
+		TUI.Menu.Entry(20, "WebDAV - Connections", Bold=True),
+		TUI.Menu.Entry(20, "TO BE DONE - DISPLAY SERVERS PER NAME / ADDRESS"),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(1, f"Register New Server", "Register a brand new WebDAV Server.", Function=Menu_WebDAV_Create),
+		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
+	];
+	TUI.Menu.Interactive(Entries);
+	Menu_Main();
+
+def Menu_Wireguard(*args: Any) -> None:
+	Entries: TUI.Menu.Entries = [
+		TUI.Menu.Entry(20, "Wireguard - Connections", Bold=True),
+		TUI.Menu.Entry(20, "TO BE DONE - DISPLAY SERVERS PER NAME / ADDRESS"),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(1, f"Register New Adapter", "Register a brand new Wireguard Adapter.", Function=Menu_Wireguard_Create),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
 	TUI.Menu.Interactive(Entries);
@@ -66,6 +142,8 @@ def Menu_Main(*args: Any) -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, "Server Protocols", Bold=True),
 		TUI.Menu.Entry(0, "Secure Shell Server", Function=Menu_SSH),
+		TUI.Menu.Entry(0, "WebDAV", Function=Menu_WebDAV),
+		TUI.Menu.Entry(0, "Wireguard", Function=Menu_Wireguard),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Exit {App.Name}", "Your train will always be waiting for you, see you next time!", Function=Quit)
