@@ -38,8 +38,8 @@ def Menu_SSH_Create() -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
 	];
-	Data: dict[str, Any] = TUI.Menu.Interactive(Entries);
-	if (Data):
+	uJSON: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	if (uJSON):
 		pass;
 
 	Menu_Main();
@@ -73,8 +73,8 @@ def Menu_WebDAV_Create() -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
-	Data: dict[str, Any] = TUI.Menu.Interactive(Entries);
-	if (Data):
+	uJSON: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	if (uJSON):
 		pass;
 	Menu_Main();
 
@@ -94,8 +94,8 @@ def Menu_Wireguard_Create() -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
-	Data: dict[str, Any] = TUI.Menu.Interactive(Entries);
-	if (Data):
+	uJSON: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	if (uJSON):
 		pass;
 	Menu_Main();
 
