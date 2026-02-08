@@ -30,7 +30,7 @@ from .Globals import Any, TypedDict;
 
 
 # Basic Types
-type Profile = dict[str, Connection_Info];
+type Profile = dict[str, Connection_Info | dict[str, str]];
 
 
 
@@ -59,3 +59,9 @@ class Tachibana_JSON(TypedDict):
 	_Version: list[int];
 	Config: dict[str, Any];
 	Servers: dict[str, Server];
+
+
+class uJSON_Wireguard(TypedDict):
+	"""Tachibana.json File Format"""
+	Tachibana_Name: str;
+	Adapter: str;
