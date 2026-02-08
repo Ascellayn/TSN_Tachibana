@@ -58,7 +58,7 @@ class Tachibana_JSON(TypedDict):
 	"""Tachibana.json File Format"""
 	_Version: list[int];
 	Config: dict[str, Any];
-	Servers: dict[str, Server];
+	Servers: dict[str, Server | dict[str, Any]];
 
 
 class uJSON_Wireguard(TypedDict):

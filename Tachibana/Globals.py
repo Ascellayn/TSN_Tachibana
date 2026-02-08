@@ -2,7 +2,7 @@ from TSN_Abstracter import *;
 from TSN_Abstracter import TUI; # pyright: ignore[reportUnusedImport]
 from . import Type;
 
-Tachibana: Type.Tachibana_JSON;
+Tachibana: Type.Tachibana_JSON = cast(Type.Tachibana_JSON, File.JSON_Read("Tachibana.json"));
 
 class Data:
 	""" This class would have been inside its own module, but the IDE gets angry because it's stupid and doesn't realize Tachibana is declared in this very file even if I explicitly import it """
