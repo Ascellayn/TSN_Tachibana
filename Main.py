@@ -81,7 +81,7 @@ def Menu_WebDAV_Create() -> None:
 		TUI.Menu.Entry(11, "Pacer Minimum Sleep", "Specify the minimum time in milliseconds the WebDAV client should wait before sending a new request.", Value="0.01", Arguments=(r"[\d\.]",), ID="Pace"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
-		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_WebDAV),
+		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_WebDAV, Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
@@ -102,7 +102,7 @@ def Menu_Wireguard_Create() -> None:
 		TUI.Menu.Entry(11, "Wireguard Adapter", "The name of the adapter in /etc/wireguard/*.conf", Value="wg0", ID="Adapter"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Function=Menu_Main),
-		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Wireguard),
+		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Wireguard, Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
