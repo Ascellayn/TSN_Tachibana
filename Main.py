@@ -18,9 +18,9 @@ def Quit() -> None:
 def Menu_SSH_Create() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Create SSH Connection", Bold=True),
-		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this SSH Server.", ID="Tachibana_Name"),
+		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this SSH Server. Will overwrite the name if a server with the same Address, Port and Protocol already exists.", ID="Tachibana_Name"),
 		TUI.Menu.Entry(11, "Server Address", "Specify the IP Address or Hostname the SSH Server is on.", ID="Address"),
-		TUI.Menu.Entry(11, "Server Port", "Specify which port the SSH Server is on.", Value="22", ID="Port"),
+		TUI.Menu.Entry(11, "Server Port", "Specify which port the SSH Server is on.", Value="22", ID="Port", Arguments=(r"\d",)),
 		TUI.Menu.Entry(11, "Username", "The username we should log on as.", Value="root", ID="Username"),
 		TUI.Menu.Entry(11, "Password", "The password we should use to login.", ID="Password"),
 		TUI.Menu.Entry(11, "SSH Key", "An absolute path to an SSH Key we should use.", Value="~/.ssh/id_rsa", ID="Passkey"),
@@ -49,7 +49,7 @@ def Menu_SSH_Create() -> None:
 def Menu_WebDAV_Create() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Create WebDAV Connection", Bold=True),
-		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this WebDAV Server.", ID="Tachibana_Name"),
+		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this WebDAV Server. Will overwrite the name if a server with the same URL and Protocol already exists.", ID="Tachibana_Name"),
 		TUI.Menu.Entry(11, "WebDAV Name", "Specify a name used by the WebDAV Configurator.", ID="WebDAV_Name"),
 		TUI.Menu.Entry(11, "Server URL", "Specify the URL of the WebDAV Server.", ID="Server_URL"),
 		TUI.Menu.Entry(11, "Username", "The username we should log on as.", Value="admin", ID="Username"),
