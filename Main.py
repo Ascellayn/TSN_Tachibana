@@ -34,7 +34,7 @@ def Menu_SSH_Create(*args: Any) -> None:
 			TUI.Menu.Entry(11, "Exported Terminal", "Increases compatibility if your Server does not support your Terminal.", 1, Value="xterm-256color"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
-		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.ù", Function=Menu_SSH),
+		TUI.Menu.Entry(1, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_SSH),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
