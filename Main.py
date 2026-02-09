@@ -9,8 +9,46 @@ from Tachibana import *;
 
 
 
-def Quit() -> None:
-	TUI.Exit(); exit(0);
+def Menu_Main() -> None:
+	Entries: TUI.Menu.Entries = [
+		TUI.Menu.Entry(20, "Welcome to Tachibana, the Server Connection Manager of Adellian."),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(20, "Quick Actions", Bold=True),
+		TUI.Menu.Entry(0, "Create new SSH Connection", Function=Menu_SSH_Create),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(20, "Server Protocols", Bold=True),
+		TUI.Menu.Entry(0, "Secure Shell Server", Function=Menu_Protocol, Arguments=("SSH",)),
+		TUI.Menu.Entry(0, "WebDAV", Function=Menu_Protocol, Arguments=("WebDAV",)),
+		TUI.Menu.Entry(0, "Wireguard", Function=Menu_Protocol, Arguments=("Wireguard",)),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(0, f"Exit {App.Name}", "Your train will always be waiting for you, see you next time!", Function=Quit, Indentation=-2)
+	];
+	TUI.Menu.Interactive(Entries);
+	Quit();
+
+
+
+
+
+def Menu_Creation(Protocol: str) -> None:
+	match Protocol:
+		case "SSH": Menu_SSH_Create();
+		case "WebDAV": Menu_WebDAV_Create();
+		case "Wireguard": Menu_Wireguard_Create();
+		case _: Menu_Main();
+
+
+def Menu_Protocol(Protocol: str) -> None:
+	Entries: TUI.Menu.Entries = [
+		TUI.Menu.Entry(20, f"{Protocol} - Connections", Bold=True),
+		*Menu_Entries(Protocol),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(0, f"Register Server", "Register a brand new Wireguard Adapter.", Function=Menu_Creation, Arguments=(Protocol,), Indentation=-2),
+		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
+	];
+	TUI.Menu.Interactive(Entries);
+	Menu_Main();
 
 
 
@@ -22,6 +60,11 @@ def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
 	
 	if (len(Server_Entries) == 0): Server_Entries.append(TUI.Menu.Entry(20, f"{App.Name} does not have any {Protocol} Servers saved, try registering one!", Unavailable=True))
 	return Server_Entries;
+
+
+
+
+
 
 
 
@@ -46,15 +89,17 @@ def Menu_SSH_Create() -> None:
 			TUI.Menu.Entry(11, "Exported Terminal", "Increases compatibility if your Server does not support your Terminal.", Indentation=1, Value="xterm-256color", ID="Term_Spoofed"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True),
-		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_SSH, Indentation=-2),
+		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Protocol, Arguments=("SSH",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
 	];
 	uJSON: dict[str, Any] = TUI.Menu.Interactive(Entries);
 	if (uJSON):
-		Menu_SSH();
+		Menu_Protocol("SSH");
 
 	Menu_Main();
+
+
 
 
 
@@ -81,14 +126,17 @@ def Menu_WebDAV_Create() -> None:
 		TUI.Menu.Entry(11, "Pacer Minimum Sleep", "Specify the minimum time in milliseconds the WebDAV client should wait before sending a new request.", Value="0.01", Arguments=(r"[\d\.]",), ID="Pace"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
-		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_WebDAV, Indentation=-2),
+		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Protocol, Arguments=("WebDAV",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
 	uJSON: dict[str, Any] = TUI.Menu.Interactive(Entries);
 	if (uJSON):
-		Menu_WebDAV();
+		Menu_Protocol("Wireguard");
+
 	Menu_Main();
+
+
 
 
 
@@ -102,14 +150,14 @@ def Menu_Wireguard_Create() -> None:
 		TUI.Menu.Entry(11, "Wireguard Adapter", "The name of the adapter in /etc/wireguard/*.conf", Value="wg0", ID="Adapter"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Function=Menu_Main),
-		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Wireguard, Indentation=-2),
+		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Protocol, Arguments=("Wireguard",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
 	uJSON: uJSON_Wireguard = TUI.Menu.Interactive(Entries);
 	if (uJSON):
 		Register.Wireguard(uJSON);
-		Menu_Wireguard();
+		Menu_Protocol("Wireguard");
 
 	Menu_Main();
 
@@ -117,71 +165,12 @@ def Menu_Wireguard_Create() -> None:
 
 
 
-def Menu_SSH() -> None:
-	Entries: TUI.Menu.Entries = [
-		TUI.Menu.Entry(20, "Secure Shell Server - Connections", Bold=True),
-		*Menu_Entries("SSH"),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Register New Server", "Register a brand new SSH Server.", Function=Menu_SSH_Create, Indentation=-2),
-		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
-	];
-	TUI.Menu.Interactive(Entries);
-	Menu_Main();
-
-def Menu_WebDAV() -> None:
-	Entries: TUI.Menu.Entries = [
-		TUI.Menu.Entry(20, "WebDAV - Connections", Bold=True),
-		*Menu_Entries("WebDAV"),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Register New Server", "Register a brand new WebDAV Server.", Function=Menu_WebDAV_Create, Indentation=-2),
-		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
-	];
-	TUI.Menu.Interactive(Entries);
-	Menu_Main();
-
-def Menu_Wireguard() -> None:
-	Entries: TUI.Menu.Entries = [
-		TUI.Menu.Entry(20, "Wireguard - Connections", Bold=True),
-		*Menu_Entries("Wireguard"),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Register New Adapter", "Register a brand new Wireguard Adapter.", Function=Menu_Wireguard_Create, Indentation=-2),
-		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
-	];
-	TUI.Menu.Interactive(Entries);
-	Menu_Main();
 
 
 
 
 
-def Menu_Main() -> None:
-	Entries: TUI.Menu.Entries = [
-		TUI.Menu.Entry(20, "Welcome to Tachibana, the Server Connection Manager of Adellian."),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(20, "Quick Actions", Bold=True),
-		TUI.Menu.Entry(0, "Create new SSH Connection", Function=Menu_SSH_Create),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(20, "Server Protocols", Bold=True),
-		TUI.Menu.Entry(0, "Secure Shell Server", Function=Menu_SSH),
-		TUI.Menu.Entry(0, "WebDAV", Function=Menu_WebDAV),
-		TUI.Menu.Entry(0, "Wireguard", Function=Menu_Wireguard),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Exit {App.Name}", "Your train will always be waiting for you, see you next time!", Function=Quit, Indentation=-2)
-	];
-	TUI.Menu.Interactive(Entries);
-	Quit();
-
-
-
-
-
-
-
-
-
-
-
+def Quit() -> None: TUI.Exit(); exit(0);
 def Ignition() -> None:
 	Log.Stateless("Loading Tachibana JSON...");
 
