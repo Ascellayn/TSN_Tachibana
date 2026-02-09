@@ -45,15 +45,7 @@ class Connection_Info(TypedDict):
 
 
 
-# Specific Types
-class SSH(Connection_Info):
-	Passkey: str | None;
-	Folder_Remote: str; Folder_Local: str;
-
-
-
-
-
+# Tachibana JSON & uJSONs
 class Tachibana_JSON(TypedDict):
 	"""Tachibana.json File Format"""
 	_Version: list[int];
@@ -61,7 +53,46 @@ class Tachibana_JSON(TypedDict):
 	Servers: dict[str, Server | dict[str, Any]];
 
 
+
+
+
+class uJSON_SSH(TypedDict):
+	""" SSH Config"""
+	# General
+	Tachibana_Name: str;
+	Address: str; Port: int;
+	Username: str; Password: str; Passkey: str;
+
+	# SFTP
+	Folder_Remote: str;
+	Folder_Local: str;
+
+	# Workarounds
+	Term_Spoof: bool;
+	Term_Spoofed: str;
+
+
+class uJSON_WebDAV(TypedDict):
+	""" WebDAV Config """
+	# General
+	Tachibana_Name: str;
+	WebDAV_Name: str;
+	Server_URL: str;
+	Username: str; Password: str;
+
+	# Mounting
+	Folder_Remote: str;
+	Folder_Local: str;
+
+	# Caching
+	Cache_VFS: bool; Cache_VFS_Type: str;
+	Cache_DIR: bool; Cache_DIR_Value: str;
+
+	# Miscellaneous
+	Misc_Pace: str;
+
+
 class uJSON_Wireguard(TypedDict):
-	"""Tachibana.json File Format"""
+	""" Wireguard Config """
 	Tachibana_Name: str;
 	Adapter: str;
