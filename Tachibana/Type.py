@@ -52,14 +52,15 @@ class Tachibana_JSON(TypedDict):
 	Config: dict[str, Any];
 	Servers: dict[str, Server | dict[str, Any]];
 
+class uJSON(TypedDict):
+	Tachibana_Name: str;
 
 
 
 
-class uJSON_SSH(TypedDict):
+class uJSON_SSH(uJSON):
 	""" SSH Config"""
 	# General
-	Tachibana_Name: str;
 	Address: str; Port: int;
 	Username: str; Password: str; Passkey: str;
 
@@ -72,10 +73,9 @@ class uJSON_SSH(TypedDict):
 	Term_Spoofed: str;
 
 
-class uJSON_WebDAV(TypedDict):
+class uJSON_WebDAV(uJSON):
 	""" WebDAV Config """
 	# General
-	Tachibana_Name: str;
 	WebDAV_Name: str;
 	Server_URL: str;
 	Username: str; Password: str;
@@ -92,7 +92,6 @@ class uJSON_WebDAV(TypedDict):
 	Misc_Pace: str;
 
 
-class uJSON_Wireguard(TypedDict):
+class uJSON_Wireguard(uJSON):
 	""" Wireguard Config """
-	Tachibana_Name: str;
 	Adapter: str;
