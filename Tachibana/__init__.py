@@ -1,7 +1,8 @@
 from .Globals import *;
-from .Type import *;
 from . import Register;
+from . import Type;
 
 _all__ = [
-	Register
+	Register,
+	Type
 ];

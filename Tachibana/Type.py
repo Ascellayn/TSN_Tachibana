@@ -77,7 +77,8 @@ class uJSON_WebDAV(uJSON):
 	""" WebDAV Config """
 	# General
 	WebDAV_Name: str;
-	Server_URL: str;
+	Encryption: bool;
+	Address: str; Port: int;
 	Username: str; Password: str;
 
 	# Mounting

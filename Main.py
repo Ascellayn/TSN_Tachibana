@@ -56,7 +56,7 @@ def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
 	Server_Entries: list[TUI.Menu.Entry] = [];
 	if (Protocol in Tachibana["Servers"].keys()):
 		for Server in Tachibana["Servers"][Protocol].keys():
-			Server_Entries.append(TUI.Menu.Entry(0, f"{Tachibana["Servers"][Protocol][Server]["Name"]}", f"{App.Name} knows this Server Internally as \"{Server}\".", Unavailable=True));
+			Server_Entries.append(TUI.Menu.Entry(0, f"{Tachibana["Servers"][Protocol][Server]["Name"]}", f"{App.Name} knows this server internally as \"{Server}\".", Unavailable=True));
 	
 	if (len(Server_Entries) == 0): Server_Entries.append(TUI.Menu.Entry(20, f"{App.Name} does not have any {Protocol} Servers saved, try registering one!", Unavailable=True))
 	return Server_Entries;
@@ -88,13 +88,14 @@ def Menu_SSH_Create() -> None:
 		TUI.Menu.Entry(10, "Spoof Terminal", "Enable to spoof to the Server which Terminal you are using. Useful if the Server does not support your Terminal.", ID="Term_Spoof"),
 			TUI.Menu.Entry(11, "Exported Terminal", "Increases compatibility if your Server does not support your Terminal.", Indentation=1, Value="xterm-256color", ID="Term_Spoofed"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information."),
 		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Protocol, Arguments=("SSH",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
 	];
-	uJSON: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	uJSON: Type.uJSON_SSH = TUI.Menu.Interactive(Entries);
 	if (uJSON):
+		Register.SSH(uJSON);
 		Menu_Protocol("SSH");
 
 	Menu_Main();
@@ -106,9 +107,11 @@ def Menu_SSH_Create() -> None:
 def Menu_WebDAV_Create() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, "Create WebDAV Connection", Bold=True),
-		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this WebDAV Server. Will overwrite the name if a server with the same URL and Protocol already exists.", ID="Tachibana_Name"),
+		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this WebDAV Server. Will overwrite the name if a server with the same Address, Port and Protocol already exists.", ID="Tachibana_Name"),
 		TUI.Menu.Entry(11, "WebDAV Name", "Specify a name used by the WebDAV Configurator.", ID="WebDAV_Name"),
-		TUI.Menu.Entry(11, "Server URL", "Specify the URL of the WebDAV Server.", ID="Server_URL"),
+		TUI.Menu.Entry(10, "Enable Encryption (HTTPS)", "Enable the use of HTTPS, recommended if you're connecting to a non-local WebDAV Server.", Value=False, ID="Encryption"),
+		TUI.Menu.Entry(11, "Address", "Specify the IP Address or Hostname of the WebDAV Server.", ID="Address"),
+		TUI.Menu.Entry(11, "Server Port", "Specify which port the WebDAV Server is on.", Value="80", ID="Port", Arguments=(r"\d",)),
 		TUI.Menu.Entry(11, "Username", "The username we should log on as.", Value="admin", ID="Username"),
 		TUI.Menu.Entry(11, "Password", "The password we should use to login.", ID="Password"),
 		TUI.Menu.Entry(20, ""),
@@ -123,16 +126,17 @@ def Menu_WebDAV_Create() -> None:
 			TUI.Menu.Entry(11, "Cache Duration", "Specify how long the directory cache should last before expiring.", Value="1h", ID="Cache_DIR_Value"),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, "Miscellaneous", Bold=True),
-		TUI.Menu.Entry(11, "Pacer Minimum Sleep", "Specify the minimum time in milliseconds the WebDAV client should wait before sending a new request.", Value="0.01", Arguments=(r"[\d\.]",), ID="Pace"),
+		TUI.Menu.Entry(11, "Pacer Minimum Sleep", "Specify the minimum time in milliseconds the WebDAV client should wait before sending a new request.", Value="0.01", Arguments=(r"[\d\.]",), ID="Misc_Pace"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Unavailable=True, Function=Menu_Main),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information."),
 		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Protocol, Arguments=("WebDAV",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
-	uJSON: dict[str, Any] = TUI.Menu.Interactive(Entries);
+	uJSON: Type.uJSON_WebDAV = TUI.Menu.Interactive(Entries);
 	if (uJSON):
-		Menu_Protocol("Wireguard");
+		Register.WebDAV(uJSON);
+		Menu_Protocol("WebDAV");
 
 	Menu_Main();
 
@@ -149,12 +153,12 @@ def Menu_Wireguard_Create() -> None:
 		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this Wireguard Server.", ID="Tachibana_Name"),
 		TUI.Menu.Entry(11, "Wireguard Adapter", "The name of the adapter in /etc/wireguard/*.conf", Value="wg0", ID="Adapter"),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Function=Menu_Main),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information."),
 		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Menu_Protocol, Arguments=("Wireguard",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Return to Main Menu", Function=Menu_Main)
 	];
-	uJSON: uJSON_Wireguard = TUI.Menu.Interactive(Entries);
+	uJSON: Type.uJSON_Wireguard = TUI.Menu.Interactive(Entries);
 	if (uJSON):
 		Register.Wireguard(uJSON);
 		Menu_Protocol("Wireguard");
@@ -187,7 +191,7 @@ def Ignition() -> None:
 		# Upgrading version json logic here
 		Log.Warning(f"{App.Name} was updated but the saved data is too old to function with this version! Attempting to upgrade...");
 		File.JSON_Write(f"Tachibana-v{''.join(String.ify_Array(Tachibana['_Version']))}.bak", Tachibana);
-		...
+		... # Upgrades will only be available after Tachibana v1.0
 
 		File.JSON_Write("Tachibana.json", Tachibana);
 
