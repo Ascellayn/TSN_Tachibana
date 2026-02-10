@@ -54,9 +54,40 @@ def Menu_Protocol(Protocol: str) -> None:
 
 def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
 	Server_Entries: list[TUI.Menu.Entry] = [];
+	Pinged: set[str] = set();
+
 	if (Protocol in Tachibana["Servers"].keys()):
-		for Server in Tachibana["Servers"][Protocol].keys():
-			Server_Entries.append(TUI.Menu.Entry(0, f"{Tachibana["Servers"][Protocol][Server]["Name"]}", f"{App.Name} knows this server internally as \"{Server}\".", Unavailable=True));
+		for Count, Server in enumerate(Tachibana["Servers"][Protocol].keys()):
+			Latency: str = "";
+			if (":" in Server): # Ping Calculation using Sockets
+				if (Server not in Pinged):
+					Pinged.add(Server);
+
+					TUI.Menu.Base();
+					# Progress Bar
+					Bar: str = f"█" * round(
+						(Count/len(Tachibana["Servers"][Protocol].keys()))
+						* (TUI.curses.COLS - 2)
+					);
+					TUI.Window.insstr(TUI.curses.LINES - 2, 1, Bar);
+
+					# Text Information
+					TUI.Window.insstr(2, 3, f"Pinging Servers... [{Count + 1}/{len(Tachibana["Servers"][Protocol].keys())}]");
+					TUI.Window.insstr(3, 3, f"> {Server}");
+					TUI.Window.refresh();
+					#Time.time.sleep(1);
+
+
+					Init: float = Time.Get_Unix(True);
+					Socket: socket.socket = socket.socket(socket.AF_INET);
+					Socket.settimeout(1);
+					try:
+						Address, Port = Server.split(":");
+						Socket.connect((Address, int(Port)));
+						Latency = f" ({round((Time.Get_Unix(True) - Init)*1000)}ms)";
+					except: Latency = f" (Unreachable)";
+
+			Server_Entries.append(TUI.Menu.Entry(0, f"{Tachibana["Servers"][Protocol][Server]["Name"]}{Latency}", f"{App.Name} knows this server internally as \"{Server}\".", Unavailable=True));
 	
 	if (len(Server_Entries) == 0): Server_Entries.append(TUI.Menu.Entry(20, f"{App.Name} does not have any {Protocol} Servers saved, try registering one!", Unavailable=True))
 	return Server_Entries;

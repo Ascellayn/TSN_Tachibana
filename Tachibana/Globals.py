@@ -2,6 +2,8 @@ from TSN_Abstracter import *;
 from TSN_Abstracter import TUI; # pyright: ignore[reportUnusedImport]
 from . import Type;
 
+import socket; # pyright: ignore[reportUnusedImport]
+
 Tachibana: Type.Tachibana_JSON = cast(Type.Tachibana_JSON, File.JSON_Read("Tachibana.json"));
 
 class Data:
