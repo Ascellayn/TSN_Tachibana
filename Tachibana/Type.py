@@ -46,15 +46,43 @@ class Connection_Info(TypedDict):
 
 
 # Tachibana JSON & uJSONs
+class Config_Server(TypedDict):
+	Ping: bool;
+
+
+class Config_SSH(Config_Server):
+	Ping: bool;
+
+
+
+class Tachibana_Config(TypedDict):
+	"""Tachibana Config Format"""
+	Servers: dict[str, Config_Server];
+
+
 class Tachibana_JSON(TypedDict):
 	"""Tachibana.json File Format"""
 	_Version: list[int];
-	Config: dict[str, Any];
+	Config: Tachibana_Config;
 	Servers: dict[str, Server | dict[str, Any]];
+#
+
+
+
+
+
+
+
+
+
 
 class uJSON(TypedDict):
 	Tachibana_Name: str;
 
+class uJSON_Config(uJSON):
+	""" Tachibana Config """
+	Server_SSH_Ping: bool;
+	Server_WebDAV_Ping: bool;
 
 
 

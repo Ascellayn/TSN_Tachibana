@@ -2,6 +2,32 @@ from .Globals import *;
 from . import Type;
 
 
+def Tachibana_Config(uJSON: Type.uJSON_Config) -> bool:
+	global Tachibana;
+	Tachibana_CFG: Type.Tachibana_Config = {
+		"Servers": {
+			"SSH": {
+				"Ping": uJSON["Server_SSH_Ping"]
+			},
+			"WebDAV": {
+				"Ping": uJSON["Server_WebDAV_Ping"]
+			}
+		}
+	};
+	Tachibana["Config"] = Tachibana_CFG;
+	Data.Save()
+	return True;
+#
+
+
+
+
+
+
+
+
+
+
 def Protocol(Protocol: str) -> None:
 	if (Protocol not in Tachibana["Servers"].keys()):
 		Tachibana["Servers"][Protocol] = {};

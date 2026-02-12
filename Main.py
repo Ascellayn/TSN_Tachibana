@@ -25,10 +25,36 @@ def Menu_Main() -> None:
 		TUI.Menu.Entry(0, "Wireguard", f"Access the Wireguard Servers that {App.Name} has saved.", Function=Menu_Protocol, Arguments=("Wireguard",)),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(0, "Settings", f"Configure {App.Name} to your liking.", Function=Menu_Settings, Indentation=-2),
 		TUI.Menu.Entry(0, f"Exit {App.Name}", "Your train will always be waiting for you, see you next time!", Function=Quit, Indentation=-2)
 	];
 	TUI.Menu.Interactive(Entries);
 	Quit();
+
+
+
+
+def Menu_Settings() -> None:
+	Entries: TUI.Menu.Entries = [
+		TUI.Menu.Entry(20, f"{App.Name} Settings", Bold=True),
+		TUI.Menu.Entry(20, ""),
+			TUI.Menu.Entry(20, "Per-Protocol Settings", Bold=True, Indentation=1),
+				TUI.Menu.Entry(20, "SSH", Bold=True, Indentation=2),
+				TUI.Menu.Entry(10, "Ping Servers", f"Allow {App.Name} to automatically mesure latency when you are selecting a server.", "Server_SSH_Ping", Indentation=2, Value=Misc.Nested_Get(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "SSH", "Ping"], True)),
+		TUI.Menu.Entry(20, ""),
+				TUI.Menu.Entry(20, "WebDAV", Bold=True, Indentation=2),
+				TUI.Menu.Entry(10, "Ping Servers", f"Allow {App.Name} to automatically mesure latency when you are selecting a server.", "Server_WebDAV_Ping", Indentation=2, Value=Misc.Nested_Get(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "WebDAV", "Ping"], True)),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(20, ""),
+		TUI.Menu.Entry(1, f"Save Configuration", "Save all your settings visually present on this page."),
+		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
+	];
+	uJSON: Type.uJSON_Config = TUI.Menu.Interactive(Entries);
+	if (uJSON):
+		Register.Tachibana_Config(uJSON);
+		Menu_Main();
+	TUI.Menu.Interactive(Entries);
+	Menu_Main();
 
 
 
@@ -58,11 +84,12 @@ def Menu_Protocol(Protocol: str) -> None:
 def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
 	Server_Entries: list[TUI.Menu.Entry] = [];
 	Pinged: set[str] = set();
+	Ping_Allowed: bool = Misc.Nested_Get(cast(dict[str, Any], Tachibana["Config"]), ["Servers", Protocol, "Ping"], True);
 
 	if (Protocol in Tachibana["Servers"].keys()):
 		for Count, Server in enumerate(Tachibana["Servers"][Protocol].keys()):
 			Latency: str = "";
-			if (":" in Server): # Ping Calculation using Sockets
+			if (":" in Server and Ping_Allowed): # Ping Calculation using Sockets
 				if (Server not in Pinged):
 					Pinged.add(Server);
 
@@ -218,7 +245,7 @@ def Ignition() -> None:
 
 
 	if (not type(Tachibana["_Version"]) is list): Data.Recreate();
-	elif (not type(Tachibana["Config"]) is dict): Data.Recreate();
+	elif (not type(Tachibana["Config"]) is dict): Data.Recreate(); # pyright: ignore[reportUnnecessaryComparison]
 	elif (not type(Tachibana["Servers"]) is dict): Data.Recreate();
 
 	if (Misc.Under_At(Tachibana["_Version"], App.Version) == 0):
