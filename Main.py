@@ -40,10 +40,10 @@ def Menu_Settings() -> None:
 		TUI.Menu.Entry(20, ""),
 			TUI.Menu.Entry(20, "Per-Protocol Settings", Bold=True, Indentation=1),
 				TUI.Menu.Entry(20, "SSH", Bold=True, Indentation=2),
-				TUI.Menu.Entry(10, "Ping Servers", f"Allow {App.Name} to automatically mesure latency when you are selecting a server.", "Server_SSH_Ping", Indentation=2, Value=Misc.Nested_Get(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "SSH", "Ping"], True)),
+				TUI.Menu.Entry(10, "Ping Servers", f"Allow {App.Name} to automatically mesure latency when you are selecting a server.", "Server_SSH_Ping", Indentation=2, Value=Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "SSH", "Ping"], True)),
 		TUI.Menu.Entry(20, ""),
 				TUI.Menu.Entry(20, "WebDAV", Bold=True, Indentation=2),
-				TUI.Menu.Entry(10, "Ping Servers", f"Allow {App.Name} to automatically mesure latency when you are selecting a server.", "Server_WebDAV_Ping", Indentation=2, Value=Misc.Nested_Get(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "WebDAV", "Ping"], True)),
+				TUI.Menu.Entry(10, "Ping Servers", f"Allow {App.Name} to automatically mesure latency when you are selecting a server.", "Server_WebDAV_Ping", Indentation=2, Value=Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "WebDAV", "Ping"], True)),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Configuration", "Save all your settings visually present on this page."),
@@ -84,7 +84,7 @@ def Menu_Protocol(Protocol: str) -> None:
 def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
 	Server_Entries: list[TUI.Menu.Entry] = [];
 	Pinged: set[str] = set();
-	Ping_Allowed: bool = Misc.Nested_Get(cast(dict[str, Any], Tachibana["Config"]), ["Servers", Protocol, "Ping"], True);
+	Ping_Allowed: bool = Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", Protocol, "Ping"], True);
 
 	if (Protocol in Tachibana["Servers"].keys()):
 		for Count, Server in enumerate(Tachibana["Servers"][Protocol].keys()):
