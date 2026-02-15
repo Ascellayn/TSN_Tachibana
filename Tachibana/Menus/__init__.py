@@ -121,7 +121,9 @@ def Entries_Profiles(Protocol: str, Address: str) -> TUI.Menu.Entries:
 			TUI.Menu.Entry(
 				0,
 				Key,
-				f"Connect to {Address} as {Key}"
+				f"Connect to {Address} as {Key}",
+				Key,
+				Arguments=(Protocol, Address)
 			));
 
 	return Profile_Entries;
