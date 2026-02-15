@@ -60,6 +60,19 @@ def Menu_Settings() -> None:
 
 
 
+def Keybind_Delete_Server(Entry: TUI.Menu.Entry) -> bool:
+	if (Entry.ID and "Yes" == TUI.Menu.Popup(
+		f"Confirm Deleting Server Entry",
+		f"\
+Are you sure you want to delete {Entry.ID}?\n\
+This action will delete everything under \"{Entry.Arguments[1]}\" which, will in turn delete {len(Tachibana['Servers'][Entry.Arguments[0]][Entry.Arguments[1]]['Profiles'])} profiles.",
+		TUI.Menu.Entry(12, Arguments=["Yes", "No"], Value="No")
+	)):
+		del Tachibana['Servers'][Entry.Arguments[0]][Entry.Arguments[1]];
+		Data.Save();
+	return True;
+
+
 def Menu_Creation(Protocol: str) -> None:
 	match Protocol:
 		case "SSH": Menu_SSH_Create();
@@ -69,15 +82,22 @@ def Menu_Creation(Protocol: str) -> None:
 
 
 def Menu_Protocol(Protocol: str) -> None:
-	Entries: TUI.Menu.Entries = [
-		TUI.Menu.Entry(20, f"{Protocol} - Connections", Bold=True),
-		*Menu_Entries(Protocol),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Register Server", f"Save a brand new {Protocol} server entry for {App.Name} to remember.", Function=Menu_Creation, Arguments=(Protocol,), Indentation=-2),
-		TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
+	Keybinds: TUI.Menu.Keybinds = [
+		TUI.Menu.Keybind(100, "Delete Server Entry", Keybind_Delete_Server)
 	];
-	TUI.Menu.Interactive(Entries);
-	Menu_Main();
+	while True:
+		Entries: TUI.Menu.Entries = [
+			TUI.Menu.Entry(20, f"{Protocol} - Connections", Bold=True),
+			*Menu_Entries(Protocol),
+			TUI.Menu.Entry(20, ""),
+			TUI.Menu.Entry(0, f"Register Server", f"Save a brand new {Protocol} server entry for {App.Name} to remember.", Function=Menu_Creation, Arguments=(Protocol,), Indentation=-2),
+			TUI.Menu.Entry(0, f"Return to Main Menu", Function=Menu_Main, Indentation=-2)
+		];
+
+		Stay: bool = TUI.Menu.Interactive(Entries, Keybinds);
+		match (Stay):
+			case True: continue;
+			case _: Menu_Main();
 
 
 
@@ -117,7 +137,15 @@ def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
 						Latency = f" ({round((Time.Get_Unix(True) - Init)*1000)}ms)";
 					except: Latency = f" (Unreachable)";
 
-			Server_Entries.append(TUI.Menu.Entry(0, f"{Tachibana["Servers"][Protocol][Server]["Name"]}{Latency}", f"{App.Name} knows this server internally as \"{Server}\".", Unavailable=True));
+			Server_Entries.append(
+				TUI.Menu.Entry(
+					0, 
+					f"{Tachibana["Servers"][Protocol][Server]["Name"]}{Latency}",
+					f"{App.Name} knows this server internally as \"{Server}\".",
+					cast(str, Tachibana["Servers"][Protocol][Server]["Name"]),
+					Unavailable=True,
+					Arguments=(Protocol, Server)
+				));
 	
 	if (len(Server_Entries) == 0): Server_Entries.append(TUI.Menu.Entry(20, f"{App.Name} does not have any {Protocol} Servers saved, try registering one!", Unavailable=True))
 	return Server_Entries;
