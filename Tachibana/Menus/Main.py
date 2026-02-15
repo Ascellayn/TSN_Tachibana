@@ -5,7 +5,7 @@ import Tachibana.Menus.Settings as MS;
 
 def Quit() -> None: TUI.Exit(); exit(0);
 def Main() -> None:
-	Favorites: list[TUI.Menu.Entry] = [
+	Favorites: TUI.Menu.Entries = [
 		TUI.Menu.Entry(0, "Create new SSH Connection", f"Save a brand new SSH server entry for {App.Name} to remember.", Function=mSSH.Create),
 	]
 	Entries: TUI.Menu.Entries = [

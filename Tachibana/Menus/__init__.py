@@ -16,24 +16,38 @@ def Menu_Creation(Protocol: str) -> None:
 		case "Wireguard": mWireguard.Create();
 		case _: MM.Main();
 
-def Profile_Orchestrator(Protocol: str, Address: str) -> None:
-	match Protocol:
-		case "SSH": TUI.Menu.Popup("Work in Progress", "This function is currently unavailable.", TUI.Menu.Entry(12, Arguments=["Ok"]), "Left");
-		case "WebDAV": TUI.Menu.Popup("Work in Progress", "This function is currently unavailable.", TUI.Menu.Entry(12, Arguments=["Ok"]), "Left");
-		case "Wireguard": TUI.Menu.Popup("Work in Progress", "This function is currently unavailable.", TUI.Menu.Entry(12, Arguments=["Ok"]), "Left");
-		case _: pass;
-	Menu_Protocol(Protocol);
+def Menu_Profiles(Protocol: str, Address: str) -> None:
+	if (Protocol in ["WebDAV", "Wireguard"]):
+		TUI.Menu.Popup("Work in Progress", f"This function is currently unavailable for {Protocol} Servers.", TUI.Menu.Entry(12, Arguments=["Ok"]), "Left")
+		Menu_Protocol(Protocol);
+
+	Keybinds: TUI.Menu.Keybinds = [
+		TUI.Menu.Keybind(100, "Delete Server Entry", KB.Delete_Profile) # pyright: ignore[reportUnknownArgumentType]
+	];
+	while True:
+		Entries: TUI.Menu.Entries = [
+			TUI.Menu.Entry(20, f"{Protocol}:\\\\{Tachibana['Servers'][Protocol][Address]['Name']} - Profiles", Bold=True),
+			*Entries_Profiles(Protocol, Address),
+			TUI.Menu.Entry(20, ""),
+			TUI.Menu.Entry(0, f"Return to all {Protocol} Entries", Function=Menu_Protocol, Arguments=[Protocol], Indentation=-2),
+			TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
+		];
+
+		Stay: bool = TUI.Menu.Interactive(Entries, Keybinds);
+		match (Stay):
+			case True: continue;
+			case _: MM.Main();
 
 
 
 def Menu_Protocol(Protocol: str) -> None:
 	Keybinds: TUI.Menu.Keybinds = [
-		TUI.Menu.Keybind(100, "Delete Server Entry", KB.Keybind_Delete_Server) # pyright: ignore[reportUnknownArgumentType]
+		TUI.Menu.Keybind(100, "Delete Server Entry", KB.Delete_Server) # pyright: ignore[reportUnknownArgumentType]
 	];
 	while True:
 		Entries: TUI.Menu.Entries = [
 			TUI.Menu.Entry(20, f"{Protocol} - Connections", Bold=True),
-			*Menu_Entries(Protocol),
+			*Entries_Server(Protocol),
 			TUI.Menu.Entry(20, ""),
 			TUI.Menu.Entry(0, f"Register Server", f"Save a brand new {Protocol} server entry for {App.Name} to remember.", Function=Menu_Creation, Arguments=(Protocol,), Indentation=-2),
 			TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
@@ -48,8 +62,8 @@ def Menu_Protocol(Protocol: str) -> None:
 
 
 
-def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
-	Server_Entries: list[TUI.Menu.Entry] = [];
+def Entries_Server(Protocol: str) -> TUI.Menu.Entries:
+	Server_Entries: TUI.Menu.Entries = [];
 	Pinged: set[str] = set();
 	Ping_Allowed: bool = Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", Protocol, "Ping"], True);
 
@@ -90,9 +104,24 @@ def Menu_Entries(Protocol: str) -> list[TUI.Menu.Entry]:
 					f"{Tachibana["Servers"][Protocol][Server]["Name"]}{Latency}",
 					f"{App.Name} knows this server internally as \"{Server}\".",
 					cast(str, Tachibana["Servers"][Protocol][Server]["Name"]),
-					Function=Profile_Orchestrator, # pyright: ignore[reportArgumentType]
+					Function=Menu_Profiles, # pyright: ignore[reportArgumentType]
 					Arguments=(Protocol, Server)
 				));
 	
 	if (len(Server_Entries) == 0): Server_Entries.append(TUI.Menu.Entry(20, f"{App.Name} does not have any {Protocol} Servers saved, try registering one!", Unavailable=True));
 	return Server_Entries;
+
+
+
+def Entries_Profiles(Protocol: str, Address: str) -> TUI.Menu.Entries:
+	Profile_Entries: TUI.Menu.Entries = [];
+	Key: str;
+	for Key in cast(Type.uJSON, Tachibana["Servers"][Protocol][Address]["Profiles"]).keys():
+		Profile_Entries.append(
+			TUI.Menu.Entry(
+				0,
+				Key,
+				f"Connect to {Address} as {Key}"
+			));
+
+	return Profile_Entries;
