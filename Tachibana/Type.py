@@ -51,7 +51,6 @@ class Config_Server(TypedDict):
 
 
 class Config_SSH(Config_Server):
-	Ping: bool;
 	Binary_SSH: str;
 	Binary_SSHFS: str;
 
@@ -59,7 +58,7 @@ class Config_SSH(Config_Server):
 
 class Tachibana_Config(TypedDict):
 	"""Tachibana Config Format"""
-	Servers: dict[str, Config_Server];
+	Servers: dict[str, Config_SSH];
 
 
 class Tachibana_JSON(TypedDict):
@@ -84,6 +83,8 @@ class uJSON(TypedDict):
 class uJSON_Config(uJSON):
 	""" Tachibana Config """
 	Server_SSH_Ping: bool;
+	Server_SSH_Binary_SSH: str;
+	Server_SSH_Binary_SSHFS: str;
 	Server_WebDAV_Ping: bool;
 
 

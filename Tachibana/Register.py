@@ -4,16 +4,18 @@ from . import Type;
 
 def Tachibana_Config(uJSON: Type.uJSON_Config) -> bool:
 	global Tachibana;
-	Tachibana_CFG: Type.Tachibana_Config = {
+	Tachibana_CFG = cast(Type.Tachibana_Config, {
 		"Servers": {
 			"SSH": {
-				"Ping": uJSON["Server_SSH_Ping"]
+				"Ping": uJSON["Server_SSH_Ping"],
+				"Binary_SSH": uJSON["Server_SSH_Binary_SSH"],
+				"Binary_SSHFS": uJSON["Server_SSH_Binary_SSHFS"]
 			},
 			"WebDAV": {
 				"Ping": uJSON["Server_WebDAV_Ping"]
 			}
 		}
-	};
+	});
 	Tachibana["Config"] = Tachibana_CFG;
 	Data.Save()
 	return True;
