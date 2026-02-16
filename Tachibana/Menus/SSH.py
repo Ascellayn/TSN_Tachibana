@@ -37,10 +37,16 @@ def Create() -> None:
 
 def Actions(Address: str, Profile_Name: str) -> TUI.Menu.Entries:
 	Profile: Type.uJSON_SSH = cast(Type.uJSON_SSH, Tachibana["Servers"]["SSH"][Address]["Profiles"][Profile_Name]);
+	
+	Binary_SSHFS: str = Safe.Nested_Dict(
+		cast(dict[str, Any], Tachibana["Config"]), 
+		["Servers", "SSH", "Binary_SSHFS"], None
+	);
+	hasSSHFS: bool = File.Exists(Binary_SSHFS) if (Binary_SSHFS) else False;
 
 	if (len(File.List(Profile["Folder_Local"])[0]) == 0 and len(File.List(Profile["Folder_Local"])[1]) == 0):
-		Mount_Entry = TUI.Menu.Entry(0, f"Mount \"{Profile['Folder_Remote']}\" Locally", f"Mount {Address}{Profile['Folder_Remote']} to {Profile['Folder_Local']}", Function=Mount, Arguments=(Profile, ));
-	else: Mount_Entry = TUI.Menu.Entry(0, f"Unmount \"{Profile['Folder_Remote']}\"", f"Unmount {Address}{Profile['Folder_Remote']} which is currently mounted at {Profile['Folder_Local']}", Function=Unmount, Arguments=(Profile, ));
+		Mount_Entry = TUI.Menu.Entry(0, f"Mount \"{Profile['Folder_Remote']}\" Locally", f"Mount {Address}{Profile['Folder_Remote']} to {Profile['Folder_Local']}", Function=Mount, Arguments=(Profile, ), Unavailable=not hasSSHFS);
+	else: Mount_Entry = TUI.Menu.Entry(0, f"Unmount \"{Profile['Folder_Remote']}\"", f"Unmount {Address}{Profile['Folder_Remote']} which is currently mounted at {Profile['Folder_Local']}", Function=Unmount, Arguments=(Profile, ), Unavailable=not hasSSHFS);
 
 	return cast(TUI.Menu.Entries, [
 		TUI.Menu.Entry(0, f"Connect to {Profile['Tachibana_Name']} as {Profile_Name}", f"Start a remote SSH Connection to {Address} as user \"{Profile_Name}\"", Function=Connect, Arguments=(Profile, )),
