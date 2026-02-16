@@ -52,6 +52,8 @@ class Config_Server(TypedDict):
 
 class Config_SSH(Config_Server):
 	Ping: bool;
+	Binary_SSH: str;
+	Binary_SSHFS: str;
 
 
 
@@ -90,7 +92,7 @@ class uJSON_SSH(uJSON):
 	""" SSH Config"""
 	# General
 	Address: str; Port: int;
-	Username: str; Password: str; Passkey: str;
+	Username: str; Passkey: str;
 
 	# SFTP
 	Folder_Remote: str;

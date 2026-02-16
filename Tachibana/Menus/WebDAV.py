@@ -30,7 +30,7 @@ def Create() -> None:
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information."),
 		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=M.Menu_Protocol, Arguments=("WebDAV",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main)
+		TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
 	];
 	uJSON: Type.uJSON_WebDAV = TUI.Menu.Interactive(Entries);
 	if (uJSON):

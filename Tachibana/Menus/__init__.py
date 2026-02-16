@@ -16,13 +16,15 @@ def Menu_Creation(Protocol: str) -> None:
 		case "Wireguard": mWireguard.Create();
 		case _: MM.Main();
 
+
+
 def Menu_Profiles(Protocol: str, Address: str) -> None:
 	if (Protocol in ["WebDAV", "Wireguard"]):
 		TUI.Menu.Popup("Work in Progress", f"This function is currently unavailable for {Protocol} Servers.", TUI.Menu.Entry(12, Arguments=["Ok"]), "Left")
 		Menu_Protocol(Protocol);
 
 	Keybinds: TUI.Menu.Keybinds = [
-		TUI.Menu.Keybind(100, "Delete Server Entry", KB.Delete_Profile) # pyright: ignore[reportUnknownArgumentType]
+		TUI.Menu.Keybind(100, "Delete Profile Entry", KB.Delete_Profile) # pyright: ignore[reportUnknownArgumentType]
 	];
 	while True:
 		Entries: TUI.Menu.Entries = [
@@ -57,6 +59,32 @@ def Menu_Protocol(Protocol: str) -> None:
 		match (Stay):
 			case True: continue;
 			case _: MM.Main();
+
+
+
+def Menu_Actions(Protocol: str, Address: str, Profile_Name: str) -> None:
+	while True:
+		Actions: TUI.Menu.Entries = [];
+
+		match Protocol:
+			case "SSH": Actions = mSSH.Actions(Address, Profile_Name);
+			case _: pass;
+
+		Entries: TUI.Menu.Entries = [
+			TUI.Menu.Entry(20, f"{Protocol}:\\\\{Profile_Name}@{Tachibana['Servers'][Protocol][Address]['Name']} - Actions", Bold=True),
+			TUI.Menu.Entry(20, ""),
+			*Actions,
+			TUI.Menu.Entry(20, ""),
+			TUI.Menu.Entry(0, f"Edit Profile", f"Edit the entry for \"{Profile_Name}@{Address}\".", Function=MM.Main, Indentation=-2, Unavailable=True),
+			TUI.Menu.Entry(0, f"Delete Profile", f"Delete the entry for \"{Profile_Name}@{Address}\".", Function=KB.Delete_Profile, Indentation=-2, Arguments=({"Protocol": Protocol, "Address": Address, "ID": Profile_Name},)),
+			TUI.Menu.Entry(20, ""),
+			TUI.Menu.Entry(0, f"Return to all {Tachibana['Servers'][Protocol][Address]['Name']} Profiles", f"Return to the Menu with all your saved profiles for {Address}.", Function=Menu_Profiles, Arguments=(Protocol, Address), Indentation=-2), # pyright: ignore[reportArgumentType]
+			TUI.Menu.Entry(0, f"Return to all {Protocol} Servers", f"Return to the Menu with all your saved {Protocol} Servers.", Function=Menu_Protocol, Arguments=(Protocol,), Indentation=-2),
+			TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
+		];
+
+		Stay = Type.uJSON_SSH = TUI.Menu.Interactive(Entries);
+		if (not Stay): Menu_Profiles(Protocol, Address);
 
 
 
@@ -123,7 +151,8 @@ def Entries_Profiles(Protocol: str, Address: str) -> TUI.Menu.Entries:
 				Key,
 				f"Connect to {Address} as {Key}",
 				Key,
-				Arguments=(Protocol, Address)
+				Function=Menu_Actions,
+				Arguments=(Protocol, Address, Key)
 			));
 
 	return Profile_Entries;
