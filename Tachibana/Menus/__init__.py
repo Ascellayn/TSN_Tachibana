@@ -27,9 +27,14 @@ def Menu_Profiles(Protocol: str, Address: str) -> None:
 		TUI.Menu.Keybind(100, "Delete Profile Entry", KB.Delete_Profile) # pyright: ignore[reportUnknownArgumentType]
 	];
 	while True:
+		Profiles: TUI.Menu.Entries = Entries_Profiles(Protocol, Address);
+		if (len(Profiles) == 1):
+			Menu_Actions(*Profiles[0].Arguments);
+			break;
+
 		Entries: TUI.Menu.Entries = [
 			TUI.Menu.Entry(20, f"{Protocol}:\\\\{Tachibana['Servers'][Protocol][Address]['Name']} - Profiles", Bold=True),
-			*Entries_Profiles(Protocol, Address),
+			*Profiles,
 			TUI.Menu.Entry(20, ""),
 			TUI.Menu.Entry(0, f"Return to all {Protocol} Entries", Function=Menu_Protocol, Arguments=[Protocol], Indentation=-2),
 			TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
@@ -151,7 +156,7 @@ def Entries_Profiles(Protocol: str, Address: str) -> TUI.Menu.Entries:
 				Key,
 				f"Connect to {Address} as {Key}",
 				Key,
-				Function=Menu_Actions,
+				Function=Menu_Actions, # pyright: ignore[reportArgumentType]
 				Arguments=(Protocol, Address, Key)
 			));
 
