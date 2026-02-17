@@ -9,10 +9,10 @@ def Create() -> None:
 		TUI.Menu.Entry(20, f"Notice: {App.Name} at this time is unable to create / edit / delete Wireguard Configurations."),
 		TUI.Menu.Entry(20, "This WG functionality is simply present to regroup in one place every connections you may turn on / off."),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this Wireguard Server.", ID="Tachibana_Name"),
-		TUI.Menu.Entry(11, "Wireguard Adapter", "The name of the adapter in /etc/wireguard/*.conf", Value="wg0", ID="Adapter"),
+		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this Wireguard Server.", ID="Tachibana_Name", Required=True),
+		TUI.Menu.Entry(11, "Wireguard Adapter", "The name of the adapter in /etc/wireguard/*.conf", Value="wg0", ID="Adapter", Required=True),
 		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information."),
+		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Required=True),
 		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=M.Menu_Protocol, Arguments=("Wireguard",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
