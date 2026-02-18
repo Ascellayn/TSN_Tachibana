@@ -5,6 +5,9 @@ from . import Type;
 def Tachibana_Config(uJSON: Type.uJSON_Config) -> bool:
 	global Tachibana;
 	Tachibana_CFG = cast(Type.Tachibana_Config, {
+		"Mounts": {
+			"Keep_Open": uJSON["Mounts_Keep_Open"],
+		},
 		"Servers": {
 			"SSH": {
 				"Ping": uJSON["Server_SSH_Ping"],

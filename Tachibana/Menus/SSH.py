@@ -61,7 +61,7 @@ def Connect(Profile: Type.uJSON_SSH) -> bool:
 	if (Profile["Term_Spoof"]):
 		Command += f"export TERM={Profile['Term_Spoofed']}; ";
 
-	Command += f"{Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["SSH", "Binary_SSH"], "/usr/bin/ssh")} ";
+	Command += Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "SSH", "Binary_SSH"], "/bin/ssh") + " ";
 
 	if (Profile["Passkey"] != ""):
 		Command += f"-oIdentityFile={Profile['Passkey']} ";
@@ -83,7 +83,7 @@ def Connect(Profile: Type.uJSON_SSH) -> bool:
 
 def Mount(Profile: Type.uJSON_SSH) -> bool:
 	TUI.Exit();
-	Command: str= f"{Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["SSH", "Binary_SSHFS"], "/usr/bin/sshfs")} ";
+	Command: str= Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "SSH", "Binary_SSHFS"], "/bin/sshfs") + " ";
 
 	if (Profile["Passkey"] != ""):
 		Command += f"-oIdentityFile={Profile['Passkey']} ";

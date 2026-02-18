@@ -46,6 +46,9 @@ class Connection_Info(TypedDict):
 
 
 # Tachibana JSON & uJSONs
+class Config_Mounts(TypedDict):
+	Keep_Open: bool;
+
 class Config_Server(TypedDict):
 	Ping: bool;
 
@@ -58,6 +61,7 @@ class Config_SSH(Config_Server):
 
 class Tachibana_Config(TypedDict):
 	"""Tachibana Config Format"""
+	Mounts: dict[str, Config_Mounts];
 	Servers: dict[str, Config_SSH];
 
 
@@ -82,9 +86,12 @@ class uJSON(TypedDict):
 
 class uJSON_Config(uJSON):
 	""" Tachibana Config """
+	Mounts_Keep_Open: bool;
+
 	Server_SSH_Ping: bool;
 	Server_SSH_Binary_SSH: str;
 	Server_SSH_Binary_SSHFS: str;
+
 	Server_WebDAV_Ping: bool;
 
 

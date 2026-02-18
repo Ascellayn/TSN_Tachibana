@@ -5,6 +5,7 @@ import Tachibana.Menus.Main as MM;
 def Settings() -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, f"{App.Name} Settings", Bold=True),
+		TUI.Menu.Entry(10, "Keep Servers Mounted", f"Allow {App.Name} to keep mounts alive if the Terminal {App.Name} was ran on gets closed.", "Mounts_Keep_Open", 0, Value=Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Mounts"], True), Unavailable=True),
 		TUI.Menu.Entry(20, ""),
 			TUI.Menu.Entry(20, "Per-Protocol Settings", Bold=True, Indentation=1),
 				TUI.Menu.Entry(20, "SSH", Bold=True, Indentation=2),
