@@ -1,5 +1,9 @@
 from ..Globals import *;
 
+
+
+
+
 def Delete_Server(Entry: TUI.Menu.Entry) -> bool:
 	Description: str = f"Are you sure you want to delete {Entry.ID}?\n"
 
@@ -15,6 +19,7 @@ def Delete_Server(Entry: TUI.Menu.Entry) -> bool:
 		del Tachibana['Servers'][Entry.Arguments[0]][Entry.Arguments[1]];
 		Data.Save();
 	return True;
+
 
 
 def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str]) -> bool:

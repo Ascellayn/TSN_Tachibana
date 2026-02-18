@@ -1,13 +1,13 @@
 from ..Globals import *;
-from .. import Register;
-import Tachibana.Menus.Main as MM;
-import Tachibana.Menus as M;
 import subprocess;
 
-def Create() -> None:
-	Entries: TUI.Menu.Entries = [
-		TUI.Menu.Entry(20, "Create SSH Connection", Bold=True),
-		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this SSH Server. Will overwrite the name if a server with the same Address, Port and Protocol already exists.", ID="Tachibana_Name", Required=True),
+
+
+
+
+Create: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = (
+	[],
+	[
 		TUI.Menu.Entry(11, "Server Address", "Specify the IP Address or Hostname the SSH Server is on.", ID="Address", Required=True),
 		TUI.Menu.Entry(11, "Server Port", "Specify which port the SSH Server is on.", Value="22", ID="Port", Arguments=(r"\d",), Required=True),
 		TUI.Menu.Entry(11, "Username", "The username we should log on as.", Value="root", ID="Username", Required=True),
@@ -20,18 +20,10 @@ def Create() -> None:
 		TUI.Menu.Entry(20, "Workarounds", Bold=True),
 		TUI.Menu.Entry(10, "Spoof Terminal", "Enable to spoof to the Server which Terminal you are using. Useful if the Server does not support your Terminal.", ID="Term_Spoof"),
 			TUI.Menu.Entry(11, "Exported Terminal", "Increases compatibility if your Server does not support your Terminal.", Indentation=1, Value="xterm-256color", ID="Term_Spoofed"),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Required=True),
-		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=M.Menu_Protocol, Arguments=("SSH",), Indentation=-2),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
-	];
-	uJSON: Type.uJSON_SSH = TUI.Menu.Interactive(Entries);
-	if (uJSON):
-		Register.SSH(uJSON);
-		M.Menu_Protocol("SSH");
+	]
+);
 
-	MM.Main();
+
 
 
 
@@ -52,6 +44,14 @@ def Actions(Address: str, Profile_Name: str) -> TUI.Menu.Entries:
 		TUI.Menu.Entry(0, f"Connect to {Profile['Tachibana_Name']} as {Profile_Name}", f"Start a remote SSH Connection to {Address} as user \"{Profile_Name}\"", Function=Connect, Arguments=(Profile, )),
 		Mount_Entry
 	]); # os.path.ismount does not work with sshfs, don't ask me why I have no clue.
+
+
+
+
+
+
+
+
 
 
 def Connect(Profile: Type.uJSON_SSH) -> bool:
@@ -78,6 +78,9 @@ def Connect(Profile: Type.uJSON_SSH) -> bool:
 	return True;
 
 
+
+
+
 def Mount(Profile: Type.uJSON_SSH) -> bool:
 	TUI.Exit();
 	Command: str= f"{Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["SSH", "Binary_SSHFS"], "/usr/bin/sshfs")} ";
@@ -100,6 +103,10 @@ def Mount(Profile: Type.uJSON_SSH) -> bool:
 
 	TUI.Init();
 	return True;
+
+
+
+
 
 def Unmount(Profile: Type.uJSON_SSH) -> bool:
 	TUI.Exit();

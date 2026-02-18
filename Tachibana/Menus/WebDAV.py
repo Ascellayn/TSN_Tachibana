@@ -1,12 +1,13 @@
 from ..Globals import *;
-from .. import Register;
-import Tachibana.Menus.Main as MM;
-import Tachibana.Menus as M;
+import subprocess;
 
-def Create() -> None:
-	Entries: TUI.Menu.Entries = [
-		TUI.Menu.Entry(20, "Create WebDAV Connection", Bold=True),
-		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this WebDAV Server. Will overwrite the name if a server with the same Address, Port and Protocol already exists.", ID="Tachibana_Name", Required=True),
+
+
+
+
+Create: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = (
+	[],
+	[
 		TUI.Menu.Entry(11, "WebDAV Name", "Specify a name used by the WebDAV Configurator.", ID="WebDAV_Name", Required=True),
 		TUI.Menu.Entry(10, "Enable Encryption (HTTPS)", "Enable the use of HTTPS, recommended if you're connecting to a non-local WebDAV Server.", Value=False, ID="Encryption"),
 		TUI.Menu.Entry(11, "Address", "Specify the IP Address or Hostname of the WebDAV Server.", ID="Address", Required=True),
@@ -26,15 +27,5 @@ def Create() -> None:
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, "Miscellaneous", Bold=True),
 		TUI.Menu.Entry(11, "Pacer Minimum Sleep", "Specify the minimum time in milliseconds the WebDAV client should wait before sending a new request.", Value="0.01", Arguments=(r"[\d\.]",), ID="Misc_Pace", Required=True),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Required=True),
-		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=M.Menu_Protocol, Arguments=("WebDAV",), Indentation=-2),
-		TUI.Menu.Entry(20, ""),
-		TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
-	];
-	uJSON: Type.uJSON_WebDAV = TUI.Menu.Interactive(Entries);
-	if (uJSON):
-		Register.WebDAV(uJSON);
-		M.Menu_Protocol("WebDAV");
-
-	MM.Main();
+	]
+);
