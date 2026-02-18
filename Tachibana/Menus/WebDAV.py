@@ -29,3 +29,87 @@ Create: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = (
 		TUI.Menu.Entry(11, "Pacer Minimum Sleep", "Specify the minimum time in milliseconds the WebDAV client should wait before sending a new request.", Value="0.01", Arguments=(r"[\d\.]",), ID="Misc_Pace", Required=True),
 	]
 );
+
+
+
+
+
+def Actions(Address: str, Profile_Name: str) -> TUI.Menu.Entries:
+	Profile: Type.uJSON_WebDAV = cast(Type.uJSON_WebDAV, Tachibana["Servers"]["WebDAV"][Address]["Profiles"][Profile_Name]);
+	
+	Binary: str = Safe.Nested_Dict(
+		cast(dict[str, Any], Tachibana["Config"]), 
+		["Servers", "WebDAV", "Binary"], None
+	);
+	hasRClone: bool = File.Exists(Binary) if (Binary) else False;
+
+	if (not os.path.ismount(Profile["Folder_Local"]) or (len(File.List(Profile["Folder_Local"])[0]) == 0 and len(File.List(Profile["Folder_Local"])[1]) == 0)):
+		Mount_Entry = TUI.Menu.Entry(0, f"Mount \"{Profile['Folder_Remote']}\" Locally", f"Mount {Address}{Profile['Folder_Remote']} to {Profile['Folder_Local']}", Function=Mount, Arguments=(Profile, ), Unavailable=not hasRClone);
+	else: Mount_Entry = TUI.Menu.Entry(0, f"Unmount \"{Profile['Folder_Remote']}\"", f"Unmount {Address}{Profile['Folder_Remote']} which is currently mounted at {Profile['Folder_Local']}", Function=Unmount, Arguments=(Profile, ), Unavailable=not hasRClone);
+
+	return cast(TUI.Menu.Entries, [
+		Mount_Entry
+	]); # os.path.ismount does not work with sshfs, don't ask me why I have no clue.
+
+
+
+
+
+def Mount(Profile: Type.uJSON_WebDAV) -> bool:
+	TUI.Exit();
+
+	RClone: str = Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "WebDAV", "Binary"], "/bin/rclone");
+	Command: str= RClone + " ";
+
+	Command += f"config create {Profile['WebDAV_Name']} webdav ";
+	Command += f"url={'https://' if (Profile['Encryption']) else 'http://'}{Profile['Address']}:{Profile['Port']} ";
+	Command += f"pacer_min_sleep={Profile['Misc_Pace']} ";
+
+	if (Profile["Username"] != ""): Command += f"user={Profile['Username']} ";
+	if (Profile["Password"] != ""): Command += f"pass={Profile['Password']} ";
+
+	Command += "&& ";
+
+	Command += RClone + f" mount ";
+	if (Profile["Cache_VFS"]): Command += f"--vfs-cache-mode {Profile['Cache_VFS_Type']} ";
+	if (Profile["Cache_DIR"]): Command += f"--dir-cache-time {Profile['Cache_DIR_Value']} ";
+
+	Command += f"{Profile['WebDAV_Name']}: {Profile['Folder_Local']} ";
+	Command += "--daemon ";
+
+	if (not File.Exists(Profile["Folder_Local"])):
+		File.Path_Create(Profile["Folder_Local"]);
+		Log.Warning(f"Local Path \"{Profile['Folder_Local']}\" did not exist and was created automatically.");
+
+	Log.Info(f"Running {Command}...");
+	Return: subprocess.CompletedProcess[bytes] = subprocess.run(Command, shell=True);
+	try: Return.check_returncode();
+	except Exception as Except:
+		Log.Critical(f"Got a non-null return code while running the command!\n{Except}");
+		input("Press Enter to continue.");
+
+	TUI.Init();
+	return True;
+
+
+
+
+
+def Unmount(Profile: Type.uJSON_WebDAV) -> bool:
+	TUI.Exit();
+	Command: str = f"umount {Profile['Folder_Local']}";
+
+	Log.Info(f"Running {Command}...");
+	Return: subprocess.CompletedProcess[bytes] = subprocess.run(Command, shell=True);
+	try: Return.check_returncode();
+	except Exception as Except:
+		Log.Warning(f"Caught exception when running unmount, trying with option \"-l\"...\n{Except}");
+		Command += " -l";
+		Return: subprocess.CompletedProcess[bytes] = subprocess.run(Command, shell=True);
+		try: Return.check_returncode();
+		except Exception as sExcept:
+			Log.Critical(f"Got a non-null return code while running the command!\n{sExcept}");
+			input("Press Enter to continue.");
+
+	TUI.Init();
+	return True;

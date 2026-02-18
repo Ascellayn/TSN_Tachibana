@@ -74,7 +74,7 @@ def Servers(Protocol: str, Index: int = 0) -> None:
 
 
 def Profiles(Protocol: str, Address: str, Index: int = 0) -> None:
-	if (Protocol in ["WebDAV", "Wireguard"]):
+	if (Protocol in ["Wireguard"]):
 		TUI.Menu.Popup("Work in Progress", f"This function is currently unavailable for {Protocol} Servers.", TUI.Menu.Entry(12, Arguments=["Ok"]), "Left")
 		Servers(Protocol);
 
@@ -110,6 +110,7 @@ def Actions(Protocol: str, Address: str, Profile_Name: str) -> None:
 
 		match Protocol:
 			case "SSH": Actions = mSSH.Actions(Address, Profile_Name);
+			case "WebDAV": Actions = mWebDAV.Actions(Address, Profile_Name);
 			case _: pass;
 		
 		Profiles_Disabled: bool = True if (len(Tachibana["Servers"][Protocol][Address]["Profiles"]) == 1) else False; # pyright: ignore[reportUnknownArgumentType]

@@ -15,7 +15,8 @@ def Tachibana_Config(uJSON: Type.uJSON_Config) -> bool:
 				"Binary_SSHFS": uJSON["Server_SSH_Binary_SSHFS"]
 			},
 			"WebDAV": {
-				"Ping": uJSON["Server_WebDAV_Ping"]
+				"Ping": uJSON["Server_WebDAV_Ping"],
+				"Binary": uJSON["Server_WebDAV_Binary"]
 			}
 		}
 	});

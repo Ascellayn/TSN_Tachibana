@@ -15,6 +15,7 @@ def Settings() -> None:
 		TUI.Menu.Entry(20, ""),
 				TUI.Menu.Entry(20, "WebDAV", Bold=True, Indentation=2),
 				TUI.Menu.Entry(10, "Ping Servers", f"Allow {App.Name} to automatically mesure latency when you are selecting a server.", "Server_WebDAV_Ping", 1, Value=Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "WebDAV", "Ping"], True)),
+				TUI.Menu.Entry(11, "WebDAV Binary", "Specify the executable to use when attempting to mount WebDAV Servers.", "Server_WebDAV_Binary", 1, Value=Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", "WebDAV", "Binary"], "/bin/rclone"), Required=True),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Configuration", "Save all your settings visually present on this page.", Required=True),

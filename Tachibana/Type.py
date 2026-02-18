@@ -93,6 +93,7 @@ class uJSON_Config(uJSON):
 	Server_SSH_Binary_SSHFS: str;
 
 	Server_WebDAV_Ping: bool;
+	Server_WebDAV_Binary: str;
 
 
 
