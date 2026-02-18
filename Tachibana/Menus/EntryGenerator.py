@@ -15,16 +15,17 @@ def Servers(Protocol: str) -> TUI.Menu.Entries:
 					Pinged.add(Server);
 
 					TUI.Menu.Base();
+					TUI.Menu.Base_Box();
 					# Progress Bar
 					Bar: str = f"█" * round(
 						(Count/len(Tachibana["Servers"][Protocol].keys()))
 						* (TUI.curses.COLS - 2)
 					);
-					TUI.Window.insstr(TUI.curses.LINES - 2, 1, Bar);
+					TUI.Window.addstr(TUI.curses.LINES - 2, 1, Bar);
 
 					# Text Information
-					TUI.Window.insstr(2, 3, f"Pinging Servers... [{Count + 1}/{len(Tachibana["Servers"][Protocol].keys())}]");
-					TUI.Window.insstr(3, 3, f"> {Server}");
+					TUI.Window.addstr(2, 3, String.Abbreviate(f"Pinging Servers... [{Count + 1}/{len(Tachibana["Servers"][Protocol].keys())}]", TUI.curses.COLS - 4));
+					TUI.Window.addstr(3, 3, String.Abbreviate(f"> {Server}", TUI.curses.COLS - 4));
 					TUI.Window.refresh();
 					#Time.time.sleep(1);
 

@@ -52,7 +52,8 @@ def Create(Protocol: str) -> None:
 
 def Servers(Protocol: str, Index: int = 0) -> None:
 	Keybinds: TUI.Menu.Keybinds = [
-		TUI.Menu.Keybind(100, "Delete Server Entry", KB.Delete_Server) # pyright: ignore[reportUnknownArgumentType]
+		TUI.Menu.Keybind(100, "Delete Server Entry", KB.Delete_Server), # pyright: ignore[reportUnknownArgumentType]
+		TUI.Menu.Keybind(117, "Refresh Servers", KB.Refresh_Servers) # pyright: ignore[reportUnknownArgumentType]
 	];
 	while True:
 		Entries: TUI.Menu.Entries = [

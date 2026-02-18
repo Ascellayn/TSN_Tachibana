@@ -40,3 +40,6 @@ def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str]) -> bool:
 		del Tachibana['Servers'][Profile["Protocol"]][Profile["Address"]]["Profiles"][Profile["ID"]];
 		Data.Save();
 	return True;
+
+def Refresh_Servers(Entry: TUI.Menu.Entry | dict[str, str]) -> bool:
+	return True;
