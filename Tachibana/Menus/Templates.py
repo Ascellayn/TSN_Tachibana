@@ -50,7 +50,7 @@ def Create(Protocol: str) -> None:
 
 
 
-def Servers(Protocol: str) -> None:
+def Servers(Protocol: str, Index: int = 0) -> None:
 	Keybinds: TUI.Menu.Keybinds = [
 		TUI.Menu.Keybind(100, "Delete Server Entry", KB.Delete_Server) # pyright: ignore[reportUnknownArgumentType]
 	];
@@ -63,7 +63,7 @@ def Servers(Protocol: str) -> None:
 			TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
 		];
 
-		Stay: bool = TUI.Menu.Interactive(Entries, Keybinds);
+		Stay: bool = TUI.Menu.Interactive(Entries, Keybinds, Index);
 		match (Stay):
 			case True: continue;
 			case _: MM.Main();
@@ -72,7 +72,7 @@ def Servers(Protocol: str) -> None:
 
 
 
-def Profiles(Protocol: str, Address: str) -> None:
+def Profiles(Protocol: str, Address: str, Index: int = 0) -> None:
 	if (Protocol in ["WebDAV", "Wireguard"]):
 		TUI.Menu.Popup("Work in Progress", f"This function is currently unavailable for {Protocol} Servers.", TUI.Menu.Entry(12, Arguments=["Ok"]), "Left")
 		Servers(Protocol);
@@ -90,11 +90,11 @@ def Profiles(Protocol: str, Address: str) -> None:
 			TUI.Menu.Entry(20, f"{Protocol}:\\\\{Tachibana['Servers'][Protocol][Address]['Name']} - Profiles", Bold=True),
 			*Profiles,
 			TUI.Menu.Entry(20, ""),
-			TUI.Menu.Entry(0, f"Return to all {Protocol} Entries", Function=Servers, Arguments=[Protocol], Indentation=-2),
+			TUI.Menu.Entry(0, f"Return to all {Protocol} Entries", Function=Servers, Arguments=(Protocol, Index), Indentation=-2),
 			TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
 		];
 
-		Stay: bool = TUI.Menu.Interactive(Entries, Keybinds);
+		Stay: bool = TUI.Menu.Interactive(Entries, Keybinds, Index);
 		match (Stay):
 			case True: continue;
 			case _: MM.Main();
@@ -110,6 +110,18 @@ def Actions(Protocol: str, Address: str, Profile_Name: str) -> None:
 		match Protocol:
 			case "SSH": Actions = mSSH.Actions(Address, Profile_Name);
 			case _: pass;
+		
+		Profiles_Disabled: bool = True if (len(Tachibana["Servers"][Protocol][Address]["Profiles"]) == 1) else False; # pyright: ignore[reportUnknownArgumentType]
+		indexProfile: int = 1;
+		for pIndex, Profile in enumerate(Tachibana["Servers"][Protocol][Address]["Profiles"].keys()): # type: ignore
+			if (Profile == Profile_Name):
+				indexProfile = 1 + pIndex;
+		
+
+		indexServer: int = 1;
+		for sIndex, Server in enumerate(Tachibana["Servers"][Protocol].keys()): # type: ignore
+			if (Server == Address):
+				indexServer = 1 + sIndex;
 
 		Entries: TUI.Menu.Entries = [
 			TUI.Menu.Entry(20, f"{Protocol}:\\\\{Profile_Name}@{Tachibana['Servers'][Protocol][Address]['Name']} - Actions", Bold=True),
@@ -119,10 +131,10 @@ def Actions(Protocol: str, Address: str, Profile_Name: str) -> None:
 			TUI.Menu.Entry(0, f"Edit Profile", f"Edit the entry for \"{Profile_Name}@{Address}\".", Function=MM.Main, Indentation=-2, Unavailable=True),
 			TUI.Menu.Entry(0, f"Delete Profile", f"Delete the entry for \"{Profile_Name}@{Address}\".", Function=KB.Delete_Profile, Indentation=-2, Arguments=({"Protocol": Protocol, "Address": Address, "ID": Profile_Name},)),
 			TUI.Menu.Entry(20, ""),
-			TUI.Menu.Entry(0, f"Return to all {Tachibana['Servers'][Protocol][Address]['Name']} Profiles", f"Return to the Menu with all your saved profiles for {Address}.", Function=Profiles, Arguments=(Protocol, Address), Indentation=-2), # pyright: ignore[reportArgumentType]
-			TUI.Menu.Entry(0, f"Return to all {Protocol} Servers", f"Return to the Menu with all your saved {Protocol} Servers.", Function=Servers, Arguments=(Protocol,), Indentation=-2),
+			TUI.Menu.Entry(0, f"Return to all {Tachibana['Servers'][Protocol][Address]['Name']} Profiles", f"Return to the Menu with all your saved profiles for {Address}.", Function=Profiles, Arguments=(Protocol, Address, indexProfile), Indentation=-2, Unavailable=Profiles_Disabled), # pyright: ignore[reportArgumentType]
+			TUI.Menu.Entry(0, f"Return to all {Protocol} Servers", f"Return to the Menu with all your saved {Protocol} Servers.", Function=Servers, Arguments=(Protocol, indexServer), Indentation=-2),
 			TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
 		];
 
 		Stay = Type.uJSON_SSH = TUI.Menu.Interactive(Entries);
-		if (not Stay): Profiles(Protocol, Address);
+		if (not Stay): Profiles(Protocol, Address, indexProfile);
