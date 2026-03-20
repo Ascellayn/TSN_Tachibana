@@ -85,6 +85,7 @@ class Tachibana_JSON(TypedDict):
 
 class uJSON(TypedDict):
 	Tachibana_Name: str;
+	Tachibana_Ping: bool;
 
 class uJSON_Config(uJSON):
 	""" Tachibana Config """

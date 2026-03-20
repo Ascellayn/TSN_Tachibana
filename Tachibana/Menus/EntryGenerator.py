@@ -10,34 +10,39 @@ def Servers(Protocol: str) -> TUI.Menu.Entries:
 	if (Protocol in Tachibana["Servers"].keys()):
 		for Count, Server in enumerate(Tachibana["Servers"][Protocol].keys()):
 			Latency: str = "";
-			if (":" in Server and Ping_Allowed): # Ping Calculation using Sockets
-				if (Server not in Pinged):
-					Pinged.add(Server);
 
-					TUI.Menu.Base();
-					TUI.Menu.Base_Box();
-					# Progress Bar
-					Bar: str = f"█" * round(
-						(Count/len(Tachibana["Servers"][Protocol].keys()))
-						* (TUI.curses.COLS - 2)
-					);
-					TUI.Window.addstr(TUI.curses.LINES - 2, 1, Bar);
+			# Ping Calculation using Sockets
+			if (":" in Server and Ping_Allowed):
 
-					# Text Information
-					TUI.Window.addstr(2, 3, String.Abbreviate(f"Pinging Servers... [{Count + 1}/{len(Tachibana["Servers"][Protocol].keys())}]", TUI.curses.COLS - 4));
-					TUI.Window.addstr(3, 3, String.Abbreviate(f"> {Server}", TUI.curses.COLS - 4));
-					TUI.Window.refresh();
-					#Time.time.sleep(1);
+				# Ignore a server if they've been manually disabled to ping
+				if (cast(dict[str, Any], Tachibana["Servers"][Protocol][Server]).get("Ping")):
+					# If server was already pinged, ignore it!
+					if (Server not in Pinged):
+						Pinged.add(Server);
+						TUI.Menu.Base();
+						TUI.Menu.Base_Box();
+						# Progress Bar
+						Bar: str = f"█" * round(
+							(Count/len(Tachibana["Servers"][Protocol].keys()))
+							* (TUI.curses.COLS - 2)
+						);
+						TUI.Window.addstr(TUI.curses.LINES - 2, 1, Bar);
+
+						# Text Information
+						TUI.Window.addstr(2, 3, String.Abbreviate(f"Pinging Servers... [{Count + 1}/{len(Tachibana["Servers"][Protocol].keys())}]", TUI.curses.COLS - 4));
+						TUI.Window.addstr(3, 3, String.Abbreviate(f"> {Server}", TUI.curses.COLS - 4));
+						TUI.Window.refresh();
+						#Time.time.sleep(1);
 
 
-					Init: float = Time.Get_Unix(True);
-					Socket: socket.socket = socket.socket(socket.AF_INET);
-					Socket.settimeout(1);
-					try:
-						Address, Port = Server.split(":");
-						Socket.connect((Address, int(Port)));
-						Latency = f" ({round((Time.Get_Unix(True) - Init)*1000)}ms)";
-					except: Latency = f" (Unreachable)";
+						Init: float = Time.Get_Unix(True);
+						Socket: socket.socket = socket.socket(socket.AF_INET);
+						Socket.settimeout(1);
+						try:
+							Address, Port = Server.split(":");
+							Socket.connect((Address, int(Port)));
+							Latency = f" ({round((Time.Get_Unix(True) - Init)*1000)}ms)";
+						except: Latency = f" (Unreachable)";
 
 			Server_Entries.append(
 				TUI.Menu.Entry(

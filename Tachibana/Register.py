@@ -42,6 +42,7 @@ def Profile(Protocol: str, Internal_Name: str, Profile_Name: str, uJSON: Type.uJ
 	if (not Internal_Name in Tachibana["Servers"][Protocol].keys()):
 		Tachibana["Servers"][Protocol][Internal_Name] = {
 			"Name": uJSON["Tachibana_Name"],
+			"Ping": uJSON["Tachibana_Ping"],
 			"Profiles": {}
 		};
 

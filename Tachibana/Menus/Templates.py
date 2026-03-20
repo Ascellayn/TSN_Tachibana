@@ -24,6 +24,7 @@ def Create(Protocol: str) -> None:
 	Entries: TUI.Menu.Entries = [
 		TUI.Menu.Entry(20, f"Create {Protocol} Connection", Bold=True),
 		*Parameters[0],
+		TUI.Menu.Entry(10, "Ping Server", "Allow Tachibana to automatically ping this server to acquire latency information.", ID="Tachibana_Ping", Value=True),
 		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this SSH Server. Will overwrite the name if a server with the same Address, Port and Protocol already exists.", ID="Tachibana_Name", Required=True),
 		*Parameters[1],
 		TUI.Menu.Entry(20, ""),
