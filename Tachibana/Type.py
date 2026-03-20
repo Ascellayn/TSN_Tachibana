@@ -57,12 +57,14 @@ class Config_SSH(Config_Server):
 	Binary_SSH: str;
 	Binary_SSHFS: str;
 
+class Config_WebDAV(Config_Server):
+	Binary_RClone: str;
 
 
 class Tachibana_Config(TypedDict):
 	"""Tachibana Config Format"""
 	Mounts: dict[str, Config_Mounts];
-	Servers: dict[str, Config_SSH];
+	Servers: dict[str, Config_SSH | Config_WebDAV];
 
 
 class Tachibana_JSON(TypedDict):
