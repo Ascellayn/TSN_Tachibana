@@ -36,7 +36,9 @@ Create: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = (
 
 def Actions(Address: str, Profile_Name: str) -> TUI.Menu.Entries:
 	Profile: Type.uJSON_WebDAV = cast(Type.uJSON_WebDAV, Tachibana["Servers"]["WebDAV"][Address]["Profiles"][Profile_Name]);
-	
+	Profile["Tachibana_Ping"] = Tachibana["Servers"]["WebDAV"][Address]["Ping"];
+	Profile["Tachibana_Name"] = Tachibana["Servers"]["WebDAV"][Address]["Name"];
+
 	Binary: str = Safe.Nested_Dict(
 		cast(dict[str, Any], Tachibana["Config"]), 
 		["Servers", "WebDAV", "Binary"], None

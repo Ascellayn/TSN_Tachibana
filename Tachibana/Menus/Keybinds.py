@@ -22,7 +22,7 @@ def Delete_Server(Entry: TUI.Menu.Entry) -> bool:
 
 
 
-def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str]) -> bool:
+def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str], Silent: bool = False) -> bool:
 	if (type(Entry) == TUI.Menu.Entry):
 		Profile: dict[str, Any] = {
 			"Protocol": Entry.Arguments[0],
@@ -32,11 +32,15 @@ def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str]) -> bool:
 	elif (type(Entry) == dict): Profile = Entry;
 	else: raise ValueError(f"{App.Name}: Entry type \"{type(Entry)}\" is unhandled.");
 
-	if (Profile["ID"] and "Yes" == TUI.Menu.Popup(
-		f"Confirm Deleting Profile Entry",
-		f"Are you sure you want to delete {Profile["ID"]}?\n",
-		TUI.Menu.Entry(12, Arguments=["Yes", "No"], Value="No")
-	)):
+	if (not Silent):
+		Confirmation: bool = TUI.Menu.Popup(
+			f"Confirm Deleting Profile Entry",
+			f"Are you sure you want to delete {Profile["ID"]}?\n",
+			TUI.Menu.Entry(12, Arguments=["Yes", "No"], Value="No")
+		);
+	else: Confirmation: bool = True;
+
+	if (Profile["ID"] and Confirmation):
 		del Tachibana['Servers'][Profile["Protocol"]][Profile["Address"]]["Profiles"][Profile["ID"]];
 		Data.Save();
 	return True;

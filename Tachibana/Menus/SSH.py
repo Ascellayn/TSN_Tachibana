@@ -29,7 +29,9 @@ Create: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = (
 
 def Actions(Address: str, Profile_Name: str) -> TUI.Menu.Entries:
 	Profile: Type.uJSON_SSH = cast(Type.uJSON_SSH, Tachibana["Servers"]["SSH"][Address]["Profiles"][Profile_Name]);
-	
+	Profile["Tachibana_Ping"] = Tachibana["Servers"]["SSH"][Address]["Ping"];
+	Profile["Tachibana_Name"] = Tachibana["Servers"]["SSH"][Address]["Name"];
+
 	Binary_SSHFS: str = Safe.Nested_Dict(
 		cast(dict[str, Any], Tachibana["Config"]), 
 		["Servers", "SSH", "Binary_SSHFS"], None

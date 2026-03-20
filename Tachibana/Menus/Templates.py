@@ -12,31 +12,32 @@ import Tachibana.Menus.Wireguard as mWireguard;
 
 
 
-def Create(Protocol: str) -> None:
+def __Get_Parameters(Protocol: str) -> tuple[TUI.Menu.Entries, TUI.Menu.Entries]:
 	match Protocol:
-		case "SSH": Parameters: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = mSSH.Create;
-		case "WebDAV": Parameters: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = mWebDAV.Create;
-		case "Wireguard": Parameters: tuple[TUI.Menu.Entries, TUI.Menu.Entries] = mWireguard.Create;
+		case "SSH": return mSSH.Create;
+		case "WebDAV": return mWebDAV.Create;
+		case "Wireguard": return mWireguard.Create;
 		case _:
 			TUI.Menu.Popup("Unknown Protocol", f"Tachibana → Menu → Create: Unhandled Protocol \"{Protocol}\".", Entry=TUI.Menu.Entry(12, Arguments=["Return to Main Menu"]));
 			raise ValueError(f"Unknown Protocol: {Protocol}");
 
-	Entries: TUI.Menu.Entries = [
+
+def __Get_Base(Protocol: str, Parameters: tuple[TUI.Menu.Entries, TUI.Menu.Entries]) -> TUI.Menu.Entries:
+	return [
 		TUI.Menu.Entry(20, f"Create {Protocol} Connection", Bold=True),
 		*Parameters[0],
 		TUI.Menu.Entry(10, "Ping Server", "Allow Tachibana to automatically ping this server to acquire latency information.", ID="Tachibana_Ping", Value=True),
-		TUI.Menu.Entry(11, "Server Name", "Specify a friendly name for you to remember this SSH Server. Will overwrite the name if a server with the same Address, Port and Protocol already exists.", ID="Tachibana_Name", Required=True),
+		TUI.Menu.Entry(11, "Server Name", f"Specify a friendly name for you to remember this {Protocol} Server. Will overwrite the name if a server with the same Address, Port and Protocol already exists.", ID="Tachibana_Name", Required=True),
 		*Parameters[1],
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(1, f"Save Server", "Create a brand new entry with the provided information.", Required=True),
-		TUI.Menu.Entry(0, f"Cancel", "Return to the Menu with all your saved SSH Servers.", Function=Servers, Arguments=("SSH",), Indentation=-2),
+		TUI.Menu.Entry(0, f"Cancel", f"Return to the Menu with all your saved {Protocol} Servers.", Function=Servers, Arguments=("SSH",), Indentation=-2),
 		TUI.Menu.Entry(20, ""),
 		TUI.Menu.Entry(0, f"Return to Main Menu", Function=MM.Main, Indentation=-2)
 	];
 
-	uJSON: Type.uJSON = TUI.Menu.Interactive(Entries);
-	if (not uJSON): MM.Main();
 
+def __Register(Protocol: str, uJSON: Type.uJSON) -> None:
 	match Protocol:
 		case "SSH": Register.SSH(uJSON); # type: ignore
 		case "WebDAV": Register.WebDAV(uJSON); # type: ignore
@@ -45,7 +46,45 @@ def Create(Protocol: str) -> None:
 			TUI.Menu.Popup("Unknown Protocol", f"Tachibana → Menu → Create: Unhandled Protocol \"{Protocol}\".", Entry=TUI.Menu.Entry(12, Arguments=["Return to Main Menu"]));
 			raise ValueError(f"Unknown Protocol: {Protocol}");
 	Servers(Protocol);
-	
+
+
+
+def Create(Protocol: str, Entries: TUI.Menu.Entries | None = None) -> None: # pyright: ignore[reportRedeclaration]
+	if (not Entries):
+		Entries: TUI.Menu.Entries = __Get_Base(Protocol, __Get_Parameters(Protocol))
+
+	uJSON: Type.uJSON = TUI.Menu.Interactive(Entries);
+	if (not uJSON): MM.Main();
+
+	__Register(Protocol, uJSON);
+	Servers(Protocol);
+
+
+
+def Edit(Protocol: str, Address: str, Profile_Name: str) -> bool:
+	Entries: TUI.Menu.Entries = __Get_Base(Protocol, __Get_Parameters(Protocol));
+	Profile: dict[str, Any] = cast(dict[str, Any], Tachibana["Servers"][Protocol][Address]["Profiles"][Profile_Name]);
+
+	Profile["Tachibana_Ping"] = Tachibana["Servers"][Protocol][Address]["Ping"];
+	Profile["Tachibana_Name"] = Tachibana["Servers"][Protocol][Address]["Name"];
+
+	for Entry in Entries:
+		for Key, Value in Profile.items():
+			if (Entry.ID == Key):
+				Entry.Value = Value;
+
+	uJSON: Type.uJSON = TUI.Menu.Interactive(Entries);
+	if (not uJSON): return True;
+
+	KB.Delete_Profile({
+		"Protocol": Protocol,
+		"Address": Address,
+		"ID": Profile_Name
+	}, True);
+	__Register(Protocol, uJSON);
+
+	return True;
+#
 
 
 
@@ -131,7 +170,7 @@ def Actions(Protocol: str, Address: str, Profile_Name: str) -> None:
 			TUI.Menu.Entry(20, ""),
 			*Actions,
 			TUI.Menu.Entry(20, ""),
-			TUI.Menu.Entry(0, f"Edit Profile", f"Edit the entry for \"{Profile_Name}@{Address}\".", Function=MM.Main, Indentation=-2, Unavailable=True),
+			TUI.Menu.Entry(0, f"Edit Profile", f"Edit the entry for \"{Profile_Name}@{Address}\".", Function=Edit, Indentation=-2, Arguments=(Protocol, Address, Profile_Name)), # pyright: ignore[reportArgumentType]
 			TUI.Menu.Entry(0, f"Delete Profile", f"Delete the entry for \"{Profile_Name}@{Address}\".", Function=KB.Delete_Profile, Indentation=-2, Arguments=({"Protocol": Protocol, "Address": Address, "ID": Profile_Name},)),
 			TUI.Menu.Entry(20, ""),
 			TUI.Menu.Entry(0, f"Return to all {Tachibana['Servers'][Protocol][Address]['Name']} Profiles", f"Return to the Menu with all your saved profiles for {Address}.", Function=Profiles, Arguments=(Protocol, Address, indexProfile), Indentation=-2, Unavailable=Profiles_Disabled), # pyright: ignore[reportArgumentType]

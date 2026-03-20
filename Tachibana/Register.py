@@ -46,6 +46,16 @@ def Profile(Protocol: str, Internal_Name: str, Profile_Name: str, uJSON: Type.uJ
 			"Profiles": {}
 		};
 
+	# In case of edit, we still need to do this. Janky but it works.
+	Tachibana["Servers"][Protocol][Internal_Name] = {
+		"Name": uJSON["Tachibana_Name"],
+		"Ping": uJSON["Tachibana_Ping"],
+		"Profiles": Tachibana["Servers"][Protocol][Internal_Name]["Profiles"]
+	};
+
+	# Redundant entries
+	del uJSON["Tachibana_Name"]; # pyright: ignore[reportGeneralTypeIssues]
+	del uJSON["Tachibana_Ping"]; # pyright: ignore[reportGeneralTypeIssues]
 	Tachibana["Servers"][Protocol][Internal_Name]["Profiles"][Profile_Name] = uJSON
 
 
