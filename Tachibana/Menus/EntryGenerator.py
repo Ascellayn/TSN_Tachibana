@@ -2,8 +2,8 @@ from ..Globals import *;
 
 import Tachibana.Menus.Templates as T;
 
-def Servers(Protocol: str) -> TUI.Menu.Entries:
-	Server_Entries: TUI.Menu.Entries = [];
+def Servers(Protocol: str) -> TUI.Entries:
+	Server_Entries: TUI.Entries = [];
 	Pinged: set[str] = set();
 	Ping_Allowed: bool = Safe.Nested_Dict(cast(dict[str, Any], Tachibana["Config"]), ["Servers", Protocol, "Ping"], True);
 
@@ -19,8 +19,8 @@ def Servers(Protocol: str) -> TUI.Menu.Entries:
 					# If server was already pinged, ignore it!
 					if (Server not in Pinged):
 						Pinged.add(Server);
-						TUI.Menu.Base();
-						TUI.Menu.Base_Box();
+						TUI.Draw.Base();
+						TUI.Draw.Base_Box();
 						# Progress Bar
 						Bar: str = f"█" * round(
 							(Count/len(Tachibana["Servers"][Protocol].keys()))
@@ -45,7 +45,7 @@ def Servers(Protocol: str) -> TUI.Menu.Entries:
 						except: Latency = f" (Unreachable)";
 
 			Server_Entries.append(
-				TUI.Menu.Entry(
+				TUI.Entry(
 					0, 
 					f"{Tachibana["Servers"][Protocol][Server]["Name"]}{Latency}",
 					f"{App.Name} knows this server internally as \"{Server}\".",
@@ -54,19 +54,19 @@ def Servers(Protocol: str) -> TUI.Menu.Entries:
 					Arguments=(Protocol, Server)
 				));
 	
-	if (len(Server_Entries) == 0): Server_Entries.append(TUI.Menu.Entry(20, f"{App.Name} does not have any {Protocol} Servers saved, try registering one!", Unavailable=True));
+	if (len(Server_Entries) == 0): Server_Entries.append(TUI.Entry(20, f"{App.Name} does not have any {Protocol} Servers saved, try registering one!", Unavailable=True));
 	return Server_Entries;
 
 
 
 
 
-def Profiles(Protocol: str, Address: str) -> TUI.Menu.Entries:
-	Profile_Entries: TUI.Menu.Entries = [];
+def Profiles(Protocol: str, Address: str) -> TUI.Entries:
+	Profile_Entries: TUI.Entries = [];
 	Key: str;
 	for Key in cast(Type.uJSON, Tachibana["Servers"][Protocol][Address]["Profiles"]).keys():
 		Profile_Entries.append(
-			TUI.Menu.Entry(
+			TUI.Entry(
 				0,
 				Key,
 				f"Connect to {Address} as {Key}",

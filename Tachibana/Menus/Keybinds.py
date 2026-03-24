@@ -4,17 +4,17 @@ from ..Globals import *;
 
 
 
-def Delete_Server(Entry: TUI.Menu.Entry) -> bool:
+def Delete_Server(Entry: TUI.Entry) -> bool:
 	Description: str = f"Are you sure you want to delete {Entry.ID}?\n"
 
 	if ("Profiles" in Tachibana["Servers"][Entry.Arguments[0]][Entry.Arguments[1]].keys()): # pyright: ignore[reportArgumentType]
 		Description += f"This action will delete everything under \"{Entry.Arguments[1]}\" which, will in turn delete {len(Tachibana['Servers'][Entry.Arguments[0]][Entry.Arguments[1]]['Profiles'])} profiles.";
 	else: Description += f"This action will delete internally \"{Entry.Arguments[1]}\"";
 	
-	if (Entry.ID and "Yes" == TUI.Menu.Popup(
+	if (Entry.ID and "Yes" == TUI.Popup(
 		f"Confirm Deleting Server Entry",
 		Description,
-		TUI.Menu.Entry(12, Arguments=["Yes", "No"], Value="No")
+		TUI.Entry(12, Arguments=["Yes", "No"], Value="No")
 	)):
 		del Tachibana['Servers'][Entry.Arguments[0]][Entry.Arguments[1]];
 		Data.Save();
@@ -22,8 +22,8 @@ def Delete_Server(Entry: TUI.Menu.Entry) -> bool:
 
 
 
-def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str], Silent: bool = False) -> bool:
-	if (type(Entry) == TUI.Menu.Entry):
+def Delete_Profile(Entry: TUI.Entry | dict[str, str], Silent: bool = False) -> bool:
+	if (type(Entry) == TUI.Entry):
 		Profile: dict[str, Any] = {
 			"Protocol": Entry.Arguments[0],
 			"Address": Entry.Arguments[1],
@@ -33,10 +33,10 @@ def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str], Silent: bool = False)
 	else: raise ValueError(f"{App.Name}: Entry type \"{type(Entry)}\" is unhandled.");
 
 	if (not Silent):
-		Confirmation: bool = TUI.Menu.Popup(
+		Confirmation: bool = TUI.Popup(
 			f"Confirm Deleting Profile Entry",
 			f"Are you sure you want to delete {Profile["ID"]}?\n",
-			TUI.Menu.Entry(12, Arguments=["Yes", "No"], Value="No")
+			TUI.Entry(12, Arguments=["Yes", "No"], Value="No")
 		);
 	else: Confirmation: bool = True;
 
@@ -45,5 +45,5 @@ def Delete_Profile(Entry: TUI.Menu.Entry | dict[str, str], Silent: bool = False)
 		Data.Save();
 	return True;
 
-def Refresh_Servers(Entry: TUI.Menu.Entry | dict[str, str]) -> bool:
+def Refresh_Servers(Entry: TUI.Entry | dict[str, str]) -> bool:
 	return True;
