@@ -11,7 +11,7 @@ def Delete_Server(Entry: TUI.Entry) -> bool:
 		Description += f"This action will delete everything under \"{Entry.Arguments[1]}\" which, will in turn delete {len(Tachibana['Servers'][Entry.Arguments[0]][Entry.Arguments[1]]['Profiles'])} profiles.";
 	else: Description += f"This action will delete internally \"{Entry.Arguments[1]}\"";
 	
-	if (Entry.ID and "Yes" == TUI.Popup(
+	if (Entry.ID and "Yes" == TUI.Prompt(
 		f"Confirm Deleting Server Entry",
 		Description,
 		TUI.Entry(12, Arguments=["Yes", "No"], Value="No")
@@ -33,7 +33,7 @@ def Delete_Profile(Entry: TUI.Entry | dict[str, str], Silent: bool = False) -> b
 	else: raise ValueError(f"{App.Name}: Entry type \"{type(Entry)}\" is unhandled.");
 
 	if (not Silent):
-		Confirmation: bool = TUI.Popup(
+		Confirmation: bool = TUI.Prompt(
 			f"Confirm Deleting Profile Entry",
 			f"Are you sure you want to delete {Profile["ID"]}?\n",
 			TUI.Entry(12, Arguments=["Yes", "No"], Value="No")

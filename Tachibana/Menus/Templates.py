@@ -18,7 +18,7 @@ def __Get_Parameters(Protocol: str) -> tuple[TUI.Entries, TUI.Entries]:
 		case "WebDAV": return mWebDAV.Create;
 		case "Wireguard": return mWireguard.Create;
 		case _:
-			TUI.Popup("Unknown Protocol", f"Tachibana → Menu → Create: Unhandled Protocol \"{Protocol}\".", Entry=TUI.Entry(12, Arguments=["Return to Main Menu"]));
+			TUI.Prompt("Unknown Protocol", f"Tachibana → Menu → Create: Unhandled Protocol \"{Protocol}\".", Entry=TUI.Entry(12, Arguments=["Return to Main Menu"]));
 			raise ValueError(f"Unknown Protocol: {Protocol}");
 
 
@@ -43,7 +43,7 @@ def __Register(Protocol: str, uJSON: Type.uJSON) -> None:
 		case "WebDAV": Register.WebDAV(uJSON); # type: ignore
 		case "Wireguard": Register.Wireguard(uJSON); # type: ignore
 		case _:
-			TUI.Popup("Unknown Protocol", f"Tachibana → Menu → Create: Unhandled Protocol \"{Protocol}\".", Entry=TUI.Entry(12, Arguments=["Return to Main Menu"]));
+			TUI.Prompt("Unknown Protocol", f"Tachibana → Menu → Create: Unhandled Protocol \"{Protocol}\".", Entry=TUI.Entry(12, Arguments=["Return to Main Menu"]));
 			raise ValueError(f"Unknown Protocol: {Protocol}");
 	Servers(Protocol);
 
@@ -115,7 +115,7 @@ def Servers(Protocol: str, Index: int = 0) -> None:
 
 def Profiles(Protocol: str, Address: str, Index: int = 0) -> None:
 	if (Protocol in ["Wireguard"]):
-		TUI.Popup("Work in Progress", f"This function is currently unavailable for {Protocol} Servers.", TUI.Entry(12, Arguments=["Ok"]), "Left")
+		TUI.Prompt("Work in Progress", f"This function is currently unavailable for {Protocol} Servers.", TUI.Entry(12, Arguments=["Ok"]), "Left")
 		Servers(Protocol);
 
 	Keybinds: TUI.Keybinds = [
