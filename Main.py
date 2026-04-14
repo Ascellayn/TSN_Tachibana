@@ -5,7 +5,7 @@ def Ignition() -> None:
 	Log.Stateless("Loading Tachibana JSON...");
 
 	# File Checks
-	if (not Misc.All_Includes(Tachibana.keys(), ["_Version", "Config", "Servers"])):
+	if (not all(X in Tachibana.keys() for X in ["_Version", "Config", "Servers"])):
 		Data.Recreate();
 
 
